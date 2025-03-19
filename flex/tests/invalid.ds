@@ -1,0 +1,6 @@
+jakoby x = 10;
+let y = 20;
+
+cokdyz (x == y) {
+    dyghej("stejny hej")
+}

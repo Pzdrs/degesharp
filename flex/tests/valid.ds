@@ -1,0 +1,17 @@
+jakoby x = 5;
+jakoby y = x*10;
+
+cokdyz (y > x) {
+    dyghej("Y je vetsi nez X");
+} takjinak(y je x) {
+    dyghej("Y je stejny jak X");
+} jinak {
+    dyghej("jsme cooked");
+}
+
+jakoby testik = x > y a nene x je 10;
+dyghej(testik);
+
+loop (jakoby i = 0; i < 10; i = i + 1) {
+    dyghej("Current i: " + i);
+}

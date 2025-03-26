@@ -1,6 +1,5 @@
 %{
-#include "symbols.h"
-
+#include "ds.tab.h"
 void _(const char* message);
 %}
 
@@ -10,7 +9,7 @@ jakoby                        {_("DECLARE ");}
 dyghej                        {_("PRINT ");}
 cokdyz                        {_("IF ");}
 jinak                         {_("ELSE ");}
-([1-9][0-9_]*|0)              {_("NUMBER ");}
+([1-9][0-9_]*|0)              {yylval = atoi(yytext); _("NUMBER ");}
 [a-zA-Z_][a-zA-Z0-9_]*        {_("IDENTIFIER ");}
 "=="                          {_("EQUALS ");};
 "!="                          {_("NOT_EQUALS ");};

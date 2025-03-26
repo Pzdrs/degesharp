@@ -5,8 +5,8 @@ OUTPUT = a.out
 all: $(OUTPUT)
 	./$(OUTPUT)
 
-$(OUTPUT): lex.l
-	@$(LEX) lex.l
+$(OUTPUT): ds.l
+	@$(LEX) ds.l
 	@$(CC) lex.yy.c -o $(OUTPUT)
 
 clean:

@@ -4,12 +4,12 @@
 %}
 
 %%
-jakoby                        { _("DECLARE");}
+jakoby                        { _("DECLARE"); return DECLARE; }
 dyghej                        { _("PRINT");}
 cokdyz                        { _("IF");}
 jinak                         { _("ELSE");}
-a			            { _("AND");             return AND_OP; }
-nebo			            { _("OR");              return OR_OP; }
+a			                  { _("AND");             return AND_OP; }
+nebo			              { _("OR");              return OR_OP; }
 je                            { _("EQUAL");           return EQ_OP; }
 neni                          { _("NOT_EQUAL");       return NE_OP; }
 nene                          { _("NOT");             return '!'; }
@@ -34,4 +34,6 @@ nene                          { _("NOT");             return '!'; }
 "-"                           { _("MINUS");           return '-'; }
 "*"                           { _("ASTERISK");        return '*'; }
 "/"                           { _("SLASH");           return '/'; }
+
+.   {}
 %%

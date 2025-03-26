@@ -20,6 +20,7 @@ extern FILE *yyin;
 %token 
     <num>   INTEGER
     <str>   IDENTIFIER
+            DECLARE
             INC_OP      "++"
             DEC_OP      "--"
             AND_OP      "a"
@@ -29,18 +30,42 @@ extern FILE *yyin;
             LE_OP       "<="
             GE_OP       ">="
 
-%type <num> expr
+%type 
+    <num> expr
+    <str> var_declaration
 
-%left '+' '-' '*' '/'
+%left '+' '-' 
+%left '*' '/'
 
 %%
+
+degesharp: statement_list ;
+
+statement_list: statement ';' | statement ';' statement_list ;
+
+statement: assignment
+         | var_declaration ;
+
+assignment: IDENTIFIER '=' expr 
+    {
+        printf("\nAssigning the value '%d' to variable %s\n", $3, $1);
+    };
+
+var_declaration: 
+    DECLARE IDENTIFIER 
+    {
+        printf("\nDeclaring variable %s\n", $2);
+    };
+  | DECLARE IDENTIFIER '=' expr     
+    {
+        printf("\nDeclaring and initializating variable %s to '%d'\n", $1, $4);
+    };
 
 expr: expr '+' expr { $$ = $1 + $3; }
     | expr '-' expr { $$ = $1 - $3; }
     | expr '*' expr { $$ = $1 * $3; }
     | expr '/' expr { $$ = $1 / $3; }
-    | INTEGER       { $$ = $1; }
-    ;
+    | INTEGER       { $$ = $1; };
 
 %%
 

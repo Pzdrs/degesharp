@@ -1,40 +1,37 @@
 %{
 #include "ds.tab.h"
-void _(const char* message);
+#include "inc/debug.h"
 %}
 
 %%
-;                             {_("SEMICOLON ");}
-jakoby                        {_("DECLARE ");}
-dyghej                        {_("PRINT ");}
-cokdyz                        {_("IF ");}
-jinak                         {_("ELSE ");}
-([1-9][0-9_]*|0)              {yylval = atoi(yytext); _("NUMBER ");}
-[a-zA-Z_][a-zA-Z0-9_]*        {_("IDENTIFIER ");}
-"=="                          {_("EQUALS ");};
-"!="                          {_("NOT_EQUALS ");};
-">="                          {_("GREAT_OR_EQUALS ");};
-"<="                          {_("LESS_OR_EQUALS ");};
-">"                           {_("GREATER_THAN ");};
-"<"                           {_("LESS_THAN ");};
+jakoby                        { _("DECLARE");}
+dyghej                        { _("PRINT");}
+cokdyz                        { _("IF");}
+jinak                         { _("ELSE");}
+a			            { _("AND");             return AND_OP; }
+nebo			            { _("OR");              return OR_OP; }
+je                            { _("EQUAL");           return EQ_OP; }
+neni                          { _("NOT_EQUAL");       return NE_OP; }
+nene                          { _("NOT");             return '!'; }
+([1-9][0-9_]*|0)              { _("INTEGER"); yylval.num = atoi(yytext); return INTEGER;}
+[a-zA-Z_][a-zA-Z0-9_]*        { _("IDENTIFIER"); yylval.str = strdup(yytext); return IDENTIFIER; }
 
-=                             {_("ASSIGN ");};
+"++"			            { _("INCREMENT");       return INC_OP; }
+"--"			            { _("DECREMENT");       return DEC_OP; }
 
-"-"                           {_("MINUSOP ");}
-"{"                           {_("LBR ");}
-"}"                           {_("RBR ");}
-"+"                           {_("PLUSOP ");}
-"*"                           {_("MULTOP ");}
-"/"                           {_("DIVOP ");}
-"("                           {_("LB ");}
-")"                           {_("RB ");}
+">="                          { _("GREAT_OR_EQUAL");  return GE_OP; }
+"<="                          { _("LESS_OR_EQUAL");   return LE_OP; }
 
+";"                           { _("SEMICOLON");       return ';'; }
+"="                           { _("ASSIGN");          return '='; }
+">"                           { _("GREATER_THAN");    return '>'; }
+"<"                           { _("LESS_THAN");       return '<'; }
+"("                           { _("OPEN_PAREN");      return '('; }
+")"                           { _("CLOSE_PAREN");     return ')'; }
+"{"                           { _("OPEN_BRACE");      return '{'; }
+"}"                           { _("CLOSE_BRACE");     return '}'; }
+"+"                           { _("PLUS");            return '+'; }
+"-"                           { _("MINUS");           return '-'; }
+"*"                           { _("ASTERISK");        return '*'; }
+"/"                           { _("SLASH");           return '/'; }
 %%
-int main() {
-      yylex();
-}
-int yywrap() {}
-
-void _(const char* message) {
-      printf("%s", message);
-}

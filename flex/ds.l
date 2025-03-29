@@ -34,6 +34,7 @@ nene                          { _("NOT");             return '!'; }
 "-"                           { _("MINUS");           return '-'; }
 "*"                           { _("ASTERISK");        return '*'; }
 "/"                           { _("SLASH");           return '/'; }
+"^"                           { _("CARET");           return '^'; }
 
 .   {}
 %%

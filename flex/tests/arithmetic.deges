@@ -4,3 +4,4 @@ kokot = 1;
 kokot = 9 * 5 +1;
 kokot = ((((1+5)+3)+5)*2);
 exponent = 2^5;
+kokot = 1/0;

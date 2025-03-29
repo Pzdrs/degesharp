@@ -56,8 +56,12 @@ statement:
 |   var_declaration 
 ;
 
+assignment_operator:
+    '='
+;
+
 assignment: 
-    IDENTIFIER '=' expr 
+    IDENTIFIER assignment_operator expr 
         {
             printf(
                 "\nAssigning the value '%d' to variable %s\n", 
@@ -74,7 +78,7 @@ var_declaration:
                 $var_name
             );
         }
-|   DECLARE IDENTIFIER[var_name] '=' expr[var_value]     
+|   DECLARE IDENTIFIER[var_name] assignment_operator expr[var_value]     
         {
             printf(
                 "\nDeclaring and initializating variable %s to '%d'\n", 
@@ -95,9 +99,7 @@ expr:
                 $$ = $1 / $3;
             } else {
                 fprintf(
-                    stderr, "%d.%d-%d.%d: division by zero",
-                    @3.first_line, @3.first_column,
-                    @3.last_line, @3.last_column
+                    stderr, "division by zero"
                 );
             }
         }

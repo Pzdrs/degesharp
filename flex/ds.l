@@ -1,3 +1,7 @@
+D			[0-9]
+L			[a-zA-Z_]
+H			[a-fA-F0-9]
+
 %{
 #include "ds.tab.h"
 #include "inc/debug.h"
@@ -14,7 +18,8 @@ je                            { _("EQUAL");           return EQ_OP; }
 neni                          { _("NOT_EQUAL");       return NE_OP; }
 nene                          { _("NOT");             return '!'; }
 ([1-9][0-9_]*|0)              { _("INTEGER"); yylval.num = atoi(yytext); return INTEGER;}
-[a-zA-Z_][a-zA-Z0-9_]*        { _("IDENTIFIER"); yylval.str = strdup(yytext); return IDENTIFIER; }
+0[xX]{H}+                     { _("HEX_INTEGER"); yylval.num = strtol(yytext, NULL, 0); return INTEGER; }
+{L}({L}|{D})*                 { _("IDENTIFIER"); yylval.str = strdup(yytext); return IDENTIFIER; }
 
 "++"			            { _("INCREMENT");       return INC_OP; }
 "--"			            { _("DECREMENT");       return DEC_OP; }

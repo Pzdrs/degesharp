@@ -5,6 +5,49 @@ H			[a-fA-F0-9]
 %{
 #include "ds.tab.h"
 #include "inc/debug.h"
+
+char* process_string(const char* text) {
+    if (!text) return NULL;
+
+    int len = strlen(text);
+    if (len < 2 || text[0] != '"' || text[len - 1] != '"') {
+        fprintf(stderr, "Invalid input: expected string wrapped in quotes\n");
+        return NULL;
+    }
+
+    // Allocate enough space: worst case, no escapes removed.
+    char* result = malloc(len - 1);  // len-2 for removing quotes, +1 for '\0'
+    if (!result) {
+        perror("malloc failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Strip quotes and copy middle part
+    char* src = (char*)text + 1;
+    char* dest = result;
+    char* end = (char*)text + len - 1;
+
+    while (src < end) {
+        if (*src == '\\' && (src + 1 < end)) {
+            src++;
+            switch (*src) {
+                case 'n': *dest++ = '\n'; break;
+                case 't': *dest++ = '\t'; break;
+                case 'r': *dest++ = '\r'; break;
+                case '\\': *dest++ = '\\'; break;
+                case '"': *dest++ = '"'; break;
+                default: *dest++ = *src; break;
+            }
+        } else {
+            *dest++ = *src;
+        }
+        src++;
+    }
+    *dest = '\0';
+
+    return result;
+}
+
 %}
 
 %%
@@ -20,6 +63,7 @@ nene                          { _("NOT");             return '!'; }
 ([1-9][0-9_]*|0)              { _("INTEGER"); yylval.num = atoi(yytext); return INTEGER;}
 0[xX]{H}+                     { _("HEX_INTEGER"); yylval.num = strtol(yytext, NULL, 0); return INTEGER; }
 {L}({L}|{D})*                 { _("IDENTIFIER"); yylval.str = strdup(yytext); return IDENTIFIER; }
+\"(\\.|[^\\"])*\"	          { _("STRING_LITERAL"); yylval.str = process_string(yytext); return STRING_LITERAL; }
 
 "++"			            { _("INCREMENT");       return INC_OP; }
 "--"			            { _("DECREMENT");       return DEC_OP; }

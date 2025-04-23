@@ -18,18 +18,23 @@ extern FILE *yyin;
     char *str;
 }
 
+%token <num>
+    INTEGER
+
+%token <str>
+    IDENTIFIER
+    STRING_LITERAL
+
 %token 
-    <num>   INTEGER
-    <str>   IDENTIFIER
-            DECLARE
-            INC_OP      "++"
-            DEC_OP      "--"
-            AND_OP      "a"
-            OR_OP       "nene"
-            EQ_OP       "je"
-            NE_OP       "neni"
-            LE_OP       "<="
-            GE_OP       ">="
+    DECLARE
+    INC_OP      "++"
+    DEC_OP      "--"
+    AND_OP      "a"
+    OR_OP       "nene"
+    EQ_OP       "je"
+    NE_OP       "neni"
+    LE_OP       "<="
+    GE_OP       ">="
 
 %type 
     <num> expr

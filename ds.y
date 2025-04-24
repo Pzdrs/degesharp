@@ -12,14 +12,24 @@ int yywrap() {}
 
 extern FILE *yyin;
 %}
+%code requires {
+    typedef enum {
+        ASSIGN_OP,
+        ADD_ASSIGN_OP,
+        SUB_ASSIGN_OP,
+        MUL_ASSIGN_OP,
+        DIV_ASSIGN_OP
+    } AssignmentOperator;
+}
 
 %union {
     int num;
     char *str;
+    AssignmentOperator assign_op;
 }
 
 %token <num>
-    INTEGER
+    CONSTANT 
 
 %token <str>
     IDENTIFIER
@@ -35,10 +45,15 @@ extern FILE *yyin;
     NE_OP       "neni"
     LE_OP       "<="
     GE_OP       ">="
+    ADD_ASSIGN  "+="
+    SUB_ASSIGN  "-="
+    MUL_ASSIGN  "*="
+    DIV_ASSIGN  "/="
 
 %type 
     <num> expr
     <str> var_declaration
+    <assign_op> assignment_operator
 
 %left '+' '-' 
 %left '*' '/'
@@ -62,16 +77,33 @@ statement:
 ;
 
 assignment_operator:
-    '='
+    '='         { $$ = ASSIGN_OP; }
+|   ADD_ASSIGN  { $$ = ADD_ASSIGN_OP; }
+|   SUB_ASSIGN  { $$ = SUB_ASSIGN_OP; }
+|   MUL_ASSIGN  { $$ = MUL_ASSIGN_OP; }
+|   DIV_ASSIGN  { $$ = DIV_ASSIGN_OP; }
 ;
 
 assignment: 
-    IDENTIFIER assignment_operator expr 
+    IDENTIFIER[var_name] assignment_operator[op] expr[value] 
         {
-            printf(
-                "\nAssigning the value '%d' to variable %s\n", 
-                $3, $1
-            );
+            switch ($op) {
+                case ASSIGN_OP:
+                    printf("Assigning %d to %s\n", $value, $var_name);
+                    break;
+                case ADD_ASSIGN_OP:
+                    printf("Adding %d to %s\n", $value, $var_name);
+                    break;
+                case SUB_ASSIGN_OP:
+                    printf("Subtracting %d from %s\n", $value, $var_name);
+                    break;
+                case MUL_ASSIGN_OP:
+                    printf("Multiplying %s by %d\n", $var_name, $value);
+                    break;
+                case DIV_ASSIGN_OP:
+                    printf("Dividing %s by %d\n", $var_name, $value);
+                    break;
+            }
         }
 ;
 
@@ -93,7 +125,7 @@ var_declaration:
 ;
 
 expr:
-    INTEGER             /* $$ = $1 by default */
+    CONSTANT    
 |   expr '+' expr       { $$ = $1 + $3; }
 |   expr '-' expr       { $$ = $1 - $3; }
 |   expr '*' expr       { $$ = $1 * $3; }

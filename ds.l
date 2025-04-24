@@ -60,8 +60,8 @@ nebo			              { _("OR");              return OR_OP; }
 je                            { _("EQUAL");           return EQ_OP; }
 neni                          { _("NOT_EQUAL");       return NE_OP; }
 nene                          { _("NOT");             return '!'; }
-([1-9][0-9_]*|0)              { _("INTEGER"); yylval.num = atoi(yytext); return INTEGER;}
-0[xX]{H}+                     { _("HEX_INTEGER"); yylval.num = strtol(yytext, NULL, 0); return INTEGER; }
+([1-9][0-9_]*|0)              { _("CONSTANT"); yylval.num = atoi(yytext); return CONSTANT;}
+0[xX]{H}+                     { _("CONSTANT"); yylval.num = strtol(yytext, NULL, 0); return CONSTANT; }
 {L}({L}|{D})*                 { _("IDENTIFIER"); yylval.str = strdup(yytext); return IDENTIFIER; }
 \"(\\.|[^\\"])*\"	          { _("STRING_LITERAL"); yylval.str = process_string(yytext); return STRING_LITERAL; }
 
@@ -71,8 +71,14 @@ nene                          { _("NOT");             return '!'; }
 ">="                          { _("GREAT_OR_EQUAL");  return GE_OP; }
 "<="                          { _("LESS_OR_EQUAL");   return LE_OP; }
 
-";"                           { _("SEMICOLON");       return ';'; }
-"="                           { _("ASSIGN");          return '='; }
+";"                           { _("SEMICOLON");     return ';'; }
+
+"="                           { _("ASSIGN");        return '='; }
+"+="                          { _("ADD_ASSIGN");    return ADD_ASSIGN; }
+"-="                          { _("SUB_ASSIGN");    return SUB_ASSIGN; }
+"*="                          { _("MUL_ASSIGN");    return MUL_ASSIGN; }
+"/="                          { _("DIV_ASSIGN");    return DIV_ASSIGN; }
+
 ">"                           { _("GREATER_THAN");    return '>'; }
 "<"                           { _("LESS_THAN");       return '<'; }
 "("                           { _("OPEN_PAREN");      return '('; }

@@ -6,4 +6,7 @@ kokot = ((((1+5)+3)+5)*2);
 exponent = 2^5;
 kokot = 1/0;
 
-kokot = "asdf";
+kokot += 10;
+kokot -= 10;
+kokot *= 10;
+kokot /= 10;

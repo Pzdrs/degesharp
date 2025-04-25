@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "inc/ast/ast.h"
 
 // Jako funguje to i bez toho ale hazi to warning
 extern int yylex();
@@ -14,6 +15,7 @@ int yywrap() {}
 extern FILE *yyin;
 %}
 %code requires {
+    #include "inc/ast/ast.h"
     typedef enum {
         ASSIGN_OP,
         ADD_ASSIGN_OP,
@@ -27,6 +29,7 @@ extern FILE *yyin;
     int num_val;
     char *str_val;
     u_int8_t bool_val;
+    ASTNode *node;
     AssignmentOperator assign_op;
 }
 
@@ -63,6 +66,7 @@ extern FILE *yyin;
 %type 
     <str_val> declaration type_specifier
     <assign_op> assignment_operator
+    <node> atom postfix_expression
 
 %%
 
@@ -141,6 +145,7 @@ assignment_expression:
 ;
 
 assignment_operator:
+
     '='         { $$ = ASSIGN_OP; }
 |   ADD_ASSIGN  { $$ = ADD_ASSIGN_OP; }
 |   SUB_ASSIGN  { $$ = SUB_ASSIGN_OP; }
@@ -206,6 +211,9 @@ unary_expression:
 postfix_expression:
     atom
 |   postfix_expression INC_OP
+    {
+       printf("%d", $1->value); 
+    }
 |   postfix_expression DEC_OP
 /* Function calls
 |   postfix_expression '(' ')'
@@ -218,6 +226,9 @@ atom:
 |   FALSE_LITERAL 
 |   STRING_LITERAL
 |   CONSTANT
+    {
+       $$ = create_number_node($1);
+    }
 |   '(' expr ')'
 ;
 

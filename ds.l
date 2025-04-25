@@ -6,6 +6,8 @@ H			[a-fA-F0-9]
 #include "ds.tab.h"
 #include "inc/debug.h"
 
+int check_type();
+
 char* process_string(const char* text) {
     if (!text) return NULL;
 
@@ -48,9 +50,13 @@ char* process_string(const char* text) {
     return result;
 }
 
+// https://stackoverflow.com/a/36328890/12498149 - multiline comment regexp
 %}
 
 %%
+"//".*                              { _("COMMENT"); }
+"/*"[^*]*"*"([^/][^*]*"*"[^/])*"/"  { _("COMMENT_BLOCK"); }
+
 jakoby                        { _("DECLARE"); return DECLARE; }
 dyghej                        { _("PRINT");}
 cokdyz                        { _("IF");}
@@ -59,11 +65,16 @@ a			                  { _("AND");             return AND_OP; }
 nebo			              { _("OR");              return OR_OP; }
 je                            { _("EQUAL");           return EQ_OP; }
 neni                          { _("NOT_EQUAL");       return NE_OP; }
-nene                          { _("NOT");             return '!'; }
-([1-9][0-9_]*|0)              { _("CONSTANT"); yylval.num = atoi(yytext); return CONSTANT;}
-0[xX]{H}+                     { _("CONSTANT"); yylval.num = strtol(yytext, NULL, 0); return CONSTANT; }
-{L}({L}|{D})*                 { _("IDENTIFIER"); yylval.str = strdup(yytext); return IDENTIFIER; }
-\"(\\.|[^\\"])*\"	          { _("STRING_LITERAL"); yylval.str = process_string(yytext); return STRING_LITERAL; }
+nene                          { _("NOT");             return NOT_OP; }
+true                          { _("TRUE_LITERAL"); yylval.bool_val = 1; return TRUE_LITERAL; }
+false                         { _("FALSE_LITERAL"); yylval.bool_val = 0; return FALSE_LITERAL; }
+
+{L}({L}|{D})*		           { return check_type(); }
+
+([1-9][0-9_]*|0)              { _("CONSTANT_INT"); yylval.num_val = atoi(yytext); return CONSTANT;}
+0[xX]{H}+                     { _("CONSTANT_HEX"); yylval.num_val = strtol(yytext, NULL, 0); return CONSTANT; }
+
+\"(\\.|[^\\"])*\"	          { _("STRING_LITERAL"); yylval.str_val = process_string(yytext); return STRING_LITERAL; }
 
 "++"			            { _("INCREMENT");       return INC_OP; }
 "--"			            { _("DECREMENT");       return DEC_OP; }
@@ -72,6 +83,7 @@ nene                          { _("NOT");             return '!'; }
 "<="                          { _("LESS_OR_EQUAL");   return LE_OP; }
 
 ";"                           { _("SEMICOLON");     return ';'; }
+":"                           { _("COLON");        return ':'; }
 
 "="                           { _("ASSIGN");        return '='; }
 "+="                          { _("ADD_ASSIGN");    return ADD_ASSIGN; }
@@ -89,7 +101,24 @@ nene                          { _("NOT");             return '!'; }
 "-"                           { _("MINUS");           return '-'; }
 "*"                           { _("ASTERISK");        return '*'; }
 "/"                           { _("SLASH");           return '/'; }
-"^"                           { _("CARET");           return '^'; }
-
+"?"                           { _("QUESTION_MARK");        return '?'; }
 .   {}
 %%
+
+#define MATCH_TYPE(name, token) if (strcmp(yytext, name) == 0) { _(#token); return token; }
+
+int check_type() {
+    /*
+    When no keyword is matched, we check for a valid type.
+    If the type is valid, we return the corresponding token.
+
+    If the type is not valid, we return IDENTIFIER.
+    */
+    MATCH_TYPE("str", TYPE_STRING);
+    MATCH_TYPE("int", TYPE_INT);
+    MATCH_TYPE("bool", TYPE_BOOL);
+
+    printf("IDENTIFIER(%s) ", yytext);
+    yylval.str_val = strdup(yytext);
+    return IDENTIFIER;
+}

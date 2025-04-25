@@ -1,0 +1,11 @@
+jakoby deges_int : int;
+jakoby deges_bool : bool;
+jakoby deges_str : str;
+
+deges_int = 10;
+deges_bool = true;
+deges_str = "deges";
+
+jakoby deges_int2 : int = 10;
+jakoby deges_bool2 : bool = true;
+jakoby deges_str2 : str = "deges";

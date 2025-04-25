@@ -1,0 +1,10 @@
+trueVal = true;
+falseVal = false;
+
+trueVal = true nebo false;
+falseVal = true a false;
+
+falseVal = nene false;
+falseVal = nene (nene false a true);
+
+falseVal = 1 < 2 ? true : (1 je 1 ? true : false);

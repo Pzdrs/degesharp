@@ -7,10 +7,8 @@
 **Proměnné**
 
 ```
-# Decimal čísla
+# Celá čísla
 -?[0-9]+
-# Binary čísla
-0b[0-1]+
 # Hex číslo
 0x[0-9a-f]+
 
@@ -36,16 +34,14 @@ x neni y
 **Aritmetické operace**
 ```
 # Unární
-x!
++x
+-y
 
 # Binární
 x + y;
 x - y;
 x * y;
 x / y;
-
-x // y;
-x mod y;
 ```
 **Logické výrazy a podmínky**
 ```

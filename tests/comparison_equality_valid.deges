@@ -1,0 +1,15 @@
+jakoby trueVal: bool;
+jakoby falseVal: bool;
+
+trueVal = 1 < 2;
+trueVal = 1 <= 1;
+falseVal = 1 > 2;
+falseVal = 1 >= 2;
+
+trueVal = 1 je 1;
+trueVal = 1 neni 2;
+
+falseVal = 1 je 2;
+falseVal = 1 neni 1;
+
+trueVal = nene 1 je 2;

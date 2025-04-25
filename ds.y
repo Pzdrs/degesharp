@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
@@ -23,24 +24,33 @@ extern FILE *yyin;
 }
 
 %union {
-    int num;
-    char *str;
+    int num_val;
+    char *str_val;
+    u_int8_t bool_val;
     AssignmentOperator assign_op;
 }
 
-%token <num>
+%token <num_val>
     CONSTANT 
 
-%token <str>
+%token <str_val>
     IDENTIFIER
     STRING_LITERAL
 
+%token <bool_val>
+    TRUE_LITERAL
+    FALSE_LITERAL
+
 %token 
     DECLARE
+    TYPE_STRING
+    TYPE_INT
+    TYPE_BOOL
     INC_OP      "++"
     DEC_OP      "--"
     AND_OP      "a"
-    OR_OP       "nene"
+    OR_OP       "nebo"
+    NOT_OP      "nene"
     EQ_OP       "je"
     NE_OP       "neni"
     LE_OP       "<="
@@ -51,14 +61,8 @@ extern FILE *yyin;
     DIV_ASSIGN  "/="
 
 %type 
-    <num> expr
-    <str> var_declaration
+    <str_val> declaration type_specifier
     <assign_op> assignment_operator
-
-%left '+' '-' 
-%left '*' '/'
-%precedence NEG /* unary minus (negation), nonassociative -> use %precedence */
-%right '^'      /* exponentiation, highest priority */
 
 %%
 
@@ -67,13 +71,73 @@ degesharp:
 ;
 
 statement_list: 
-    statement ';'
-|   statement ';' statement_list
+    statement
+|   statement_list statement
 ;
 
 statement: 
-    assignment
-|   var_declaration 
+   expression_statement
+|  declaration 
+;
+
+type_specifier:
+    TYPE_INT { $$ = "TYPE_INT"; }
+|   TYPE_STRING { $$ = "TYPE_STRING"; }
+|   TYPE_BOOL { $$ = "TYPE_BOOL"; }
+;
+
+declaration: 
+    DECLARE IDENTIFIER[var_name] ':' type_specifier[type] ';'
+        {
+            printf(
+                "\nDeclaring %s variable %s\n", 
+                $type, $var_name
+            );
+        }
+|   DECLARE IDENTIFIER[var_name] ':' type_specifier[type] assignment_operator expr ';'
+        {
+            printf(
+                "\nDeclaring and initializating %s variable %s\n", 
+                $type, $var_name
+            );
+        }
+;
+
+
+expression_statement:
+    ';'
+|   expr ';'
+
+expr:
+    assignment_expression
+    // Allows for multiple assignments within an expression, e.g., x = 5, y = 10, z = x + y;
+|   expr ',' assignment_expression
+;
+
+// Allows the use of assignment operator in expressions
+/*
+c = 10 returns 10, so we can do multiple assignments 
+- a = b = c = 10
+
+(c = 10) + 5 returns 15
+*/
+assignment_expression: 
+    conditional_expression
+|   unary_expression assignment_operator assignment_expression
+    {
+        switch ($assignment_operator) {
+            case ASSIGN_OP:
+                break;
+            case ADD_ASSIGN_OP:
+                break;
+            case SUB_ASSIGN_OP:
+                break;
+            case MUL_ASSIGN_OP:
+                break;
+            case DIV_ASSIGN_OP:
+                break;
+        }
+    }
 ;
 
 assignment_operator:
@@ -84,68 +148,77 @@ assignment_operator:
 |   DIV_ASSIGN  { $$ = DIV_ASSIGN_OP; }
 ;
 
-assignment: 
-    IDENTIFIER[var_name] assignment_operator[op] expr[value] 
-        {
-            switch ($op) {
-                case ASSIGN_OP:
-                    printf("Assigning %d to %s\n", $value, $var_name);
-                    break;
-                case ADD_ASSIGN_OP:
-                    printf("Adding %d to %s\n", $value, $var_name);
-                    break;
-                case SUB_ASSIGN_OP:
-                    printf("Subtracting %d from %s\n", $value, $var_name);
-                    break;
-                case MUL_ASSIGN_OP:
-                    printf("Multiplying %s by %d\n", $var_name, $value);
-                    break;
-                case DIV_ASSIGN_OP:
-                    printf("Dividing %s by %d\n", $var_name, $value);
-                    break;
-            }
-        }
+// Ternary operator
+conditional_expression:
+    logical_or_expression
+|   logical_or_expression '?' expr ':' conditional_expression
 ;
 
-var_declaration: 
-    DECLARE IDENTIFIER[var_name] 
-        {
-            printf(
-                "\nDeclaring variable %s\n", 
-                $var_name
-            );
-        }
-|   DECLARE IDENTIFIER[var_name] assignment_operator expr[var_value]     
-        {
-            printf(
-                "\nDeclaring and initializating variable %s to '%d'\n", 
-                $var_name, $var_value
-            );
-        }
+logical_or_expression:
+    logical_and_expression
+|   logical_or_expression OR_OP logical_and_expression
 ;
 
-expr:
-    CONSTANT    
-|   expr '+' expr       { $$ = $1 + $3; }
-|   expr '-' expr       { $$ = $1 - $3; }
-|   expr '*' expr       { $$ = $1 * $3; }
-|   expr '/' expr       
-        {
-            if ($3) {
-                // If the divisor is nonzero simply divide
-                $$ = $1 / $3;
-            } else {
-                fprintf(
-                    stderr, "division by zero"
-                );
-            }
-        }
-|   expr '^' expr       { $$ = pow($1, $3); }
+logical_and_expression:
+    equality_expression
+|   logical_and_expression AND_OP equality_expression
+;
 
-    /* zavorkovani */
-|   '-' expr %prec NEG  { $$ = -$2; }
-    /* negace */
-|   '(' expr ')'        { $$ = $2; }
+equality_expression:
+    relational_expression
+|   equality_expression EQ_OP relational_expression
+|   equality_expression NE_OP relational_expression
+;
+
+relational_expression:
+    additive_expression
+|   relational_expression GE_OP additive_expression
+|   relational_expression LE_OP additive_expression
+|   relational_expression '<' additive_expression
+|   relational_expression '>' additive_expression
+;
+
+additive_expression:
+    multiplicative_expression
+|   additive_expression '+' multiplicative_expression
+|   additive_expression '-' multiplicative_expression
+;
+
+multiplicative_expression:
+    unary_expression
+|   multiplicative_expression '*' unary_expression
+|   multiplicative_expression '/' unary_expression
+;
+
+unary_operator: 
+    '+'
+|   '-'
+|   NOT_OP
+;
+
+unary_expression:
+    postfix_expression
+|   INC_OP unary_expression
+|   DEC_OP unary_expression
+|   unary_operator unary_expression
+;
+
+postfix_expression:
+    atom
+|   postfix_expression INC_OP
+|   postfix_expression DEC_OP
+/* Function calls
+|   postfix_expression '(' ')'
+|   postfix_expression '(' argument_list ')'
+*/
+;
+atom:
+    IDENTIFIER
+|   TRUE_LITERAL 
+|   FALSE_LITERAL 
+|   STRING_LITERAL
+|   CONSTANT
+|   '(' expr ')'
 ;
 
 %%

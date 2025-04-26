@@ -26,7 +26,6 @@ typedef enum {
 
 typedef enum {
     OP_UNARY_MINUS,
-    OP_UNARY_PLUS,
     OP_LOGICAL_NOT,
 } UnaryOpType;
 

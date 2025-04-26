@@ -66,7 +66,7 @@ extern FILE *yyin;
 %type 
     <str_val> declaration type_specifier
     <assign_op> assignment_operator
-    <node> atom expression postfix_expression unary_expression assignment_expression
+    <node> atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression
 
 %%
 
@@ -198,13 +198,33 @@ relational_expression:
 additive_expression:
     multiplicative_expression
 |   additive_expression '+' multiplicative_expression
+    {
+        $$ = create_binary_op_node(
+            OP_ADD, $1, $3
+        );
+    }
 |   additive_expression '-' multiplicative_expression
+    {
+        $$ = create_binary_op_node(
+            OP_SUB, $1, $3
+        );
+    }
 ;
 
 multiplicative_expression:
     unary_expression
 |   multiplicative_expression '*' unary_expression
+    {
+        $$ = create_binary_op_node(
+            OP_MUL, $1, $3
+        );
+    }
 |   multiplicative_expression '/' unary_expression
+    {
+        $$ = create_binary_op_node(
+            OP_DIV, $1, $3
+        );
+    }
 ;
 
 unary_expression:

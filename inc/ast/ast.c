@@ -14,7 +14,6 @@ char *binary_op_name(BinaryOpType op) {
 char *unary_op_name(UnaryOpType op) {
     switch (op) {
         case OP_UNARY_MINUS: return "unary minus";
-        case OP_UNARY_PLUS: return "unary plus";
         case OP_LOGICAL_NOT: return "logical NOT";
         default: return "unknown operation";
     }

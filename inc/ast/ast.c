@@ -48,6 +48,15 @@ char *equality_op_name(EqualityOpType op) {
     }
 }
 
+char *variable_type_name(VariableType type) {
+    switch (type) {
+        case T_INT: return "integer";
+        case T_STRING: return "string";
+        case T_BOOL: return "boolean";
+        default: return "unknown type";
+    }
+}
+
 ASTNode *create_node(NodeType type) {
     ASTNode *node = (ASTNode *)malloc(sizeof(ASTNode));
     if (!node) {
@@ -138,11 +147,11 @@ ASTNode *create_condition_node(ASTNode *condition, ASTNode *then_case, ASTNode *
     return node;
 }
 
-ASTNode *create_var_declaration_node(char *name, char* type, ASTNode *init) {
+ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *init) {
     if (init == NULL) {
-        printf("\nCreating a declaration node (var_name: %s, type: %s)\n", name, type);
+        printf("\nCreating a declaration node (var_name: %s, type: %s)\n", name, variable_type_name(type));
     } else {
-        printf("\nCreating a declaration+initialization node (var_name: %s, type: %s)\n", name, type);
+        printf("\nCreating a declaration+initialization node (var_name: %s, type: %s)\n", name, variable_type_name(type));
     }
     ASTNode *node = create_node(NODE_DECLARATION);
     node->meta.declaration.name = name;

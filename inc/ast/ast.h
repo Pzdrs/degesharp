@@ -49,6 +49,12 @@ typedef enum {
     OP_NE,
 } EqualityOpType;
 
+typedef enum {
+    T_INT,
+    T_STRING,
+    T_BOOL,
+} VariableType;
+
 typedef struct ASTNode ASTNode;
 
 struct ASTNode {
@@ -101,6 +107,7 @@ struct ASTNode {
 
         struct {
             char *name;
+            VariableType type;
             ASTNode *init;
         } declaration;
     } meta;
@@ -124,5 +131,5 @@ ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *righ
 ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *right);
 ASTNode *create_condition_node(ASTNode* cond, ASTNode* then_case, ASTNode* else_case);
 
-ASTNode *create_var_declaration_node(char *name, char* type, ASTNode *init);
+ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *init);
 #endif // AST_H

@@ -33,6 +33,7 @@ ASTNode *root = NULL;
     u_int8_t bool_val;
     ASTNode *node;
     AssignmentOperator assign_op;
+    VariableType var_type;
 }
 
 %token <num_val>
@@ -66,8 +67,9 @@ ASTNode *root = NULL;
     DIV_ASSIGN  "/="
 
 %type 
-    <str_val> declaration type_specifier
+    <str_val> declaration
     <assign_op> assignment_operator
+    <var_type> type_specifier
     <node> degesharp statement statement_list atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression
 
 %%
@@ -92,9 +94,9 @@ statement:
 ;
 
 type_specifier:
-    TYPE_INT { $$ = "TYPE_INT"; }
-|   TYPE_STRING { $$ = "TYPE_STRING"; }
-|   TYPE_BOOL { $$ = "TYPE_BOOL"; }
+    TYPE_INT { $$ = T_INT; }
+|   TYPE_STRING { $$ = T_STRING; }
+|   TYPE_BOOL { $$ = T_BOOL; }
 ;
 
 declaration: 

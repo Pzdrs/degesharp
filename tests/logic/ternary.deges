@@ -1,0 +1,3 @@
+true ? 0 : 1;
+1 < 2 ? "1 < 2" : "ne e";
+true ? true : (false ? false : true);

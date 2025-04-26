@@ -66,7 +66,7 @@ extern FILE *yyin;
 %type 
     <str_val> declaration type_specifier
     <assign_op> assignment_operator
-    <node> atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression
+    <node> atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression
 
 %%
 
@@ -169,6 +169,9 @@ assignment_operator:
 conditional_expression:
     logical_or_expression
 |   logical_or_expression '?' expression ':' conditional_expression
+    {
+        $$ = create_condition_node($1, $3, $5);
+    }
 ;
 
 logical_or_expression:

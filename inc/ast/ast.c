@@ -119,3 +119,12 @@ ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *righ
     node->meta.equality.right = right;
     return node;
 }
+
+ASTNode *create_condition_node(ASTNode *condition, ASTNode *then_case, ASTNode *else_case) {
+    printf("\nCreating a condition node\n");
+    ASTNode *node = create_node(NODE_CONDITION);
+    node->meta.condition.cond = condition;
+    node->meta.condition.then_case = then_case;
+    node->meta.condition.else_case = else_case;
+    return node;
+}

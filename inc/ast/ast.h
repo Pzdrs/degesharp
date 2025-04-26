@@ -17,6 +17,7 @@ typedef enum {
 
     NODE_RELATION_OP,
     NODE_EQUALITY_OP,
+    NODE_CONDITION
 } NodeType;
 
 
@@ -89,6 +90,11 @@ struct ASTNode {
             ASTNode *left;
             ASTNode *right;
         } relation;
+        struct {
+            ASTNode *cond;
+            ASTNode *then_case;
+            ASTNode *else_case;
+        } condition;
     } meta;
 };
 
@@ -106,4 +112,5 @@ ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand);
 
 ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *right);
 ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *right);
+ASTNode *create_condition_node(ASTNode* cond, ASTNode* then_case, ASTNode* else_case);
 #endif // AST_H

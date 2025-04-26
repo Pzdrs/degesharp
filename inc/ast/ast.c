@@ -11,6 +11,15 @@ char *binary_op_name(BinaryOpType op) {
     }
 }
 
+char *unary_op_name(UnaryOpType op) {
+    switch (op) {
+        case OP_UNARY_MINUS: return "unary minus";
+        case OP_UNARY_PLUS: return "unary plus";
+        case OP_LOGICAL_NOT: return "logical NOT";
+        default: return "unknown operation";
+    }
+}
+
 ASTNode *create_node(NodeType type) {
     ASTNode *node = (ASTNode *)malloc(sizeof(ASTNode));
     if (!node) {
@@ -63,5 +72,13 @@ ASTNode *create_binary_op_node(BinaryOpType op, ASTNode *left, ASTNode *right) {
     node->meta.binary_op.op = op;
     node->meta.binary_op.left = left;
     node->meta.binary_op.right = right;
-    return NULL;
+    return node;
+}
+
+ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand) {
+    printf("\nCreating a unary operation node (%s)\n", unary_op_name(op));
+    ASTNode *node = create_node(NODE_UNARY_OP);
+    node->meta.unary_op.op = op;
+    node->meta.unary_op.operand = operand;
+    return node;
 }

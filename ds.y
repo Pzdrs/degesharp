@@ -158,7 +158,6 @@ assignment_expression:
 ;
 
 assignment_operator:
-
     '='         { $$ = ASSIGN_OP; }
 |   ADD_ASSIGN  { $$ = ADD_ASSIGN_OP; }
 |   SUB_ASSIGN  { $$ = SUB_ASSIGN_OP; }
@@ -208,17 +207,34 @@ multiplicative_expression:
 |   multiplicative_expression '/' unary_expression
 ;
 
-unary_operator: 
-    '+'
-|   '-'
-|   NOT_OP
-;
-
 unary_expression:
     postfix_expression
 |   INC_OP unary_expression
+    {
+        ASTNode *num_node = create_number_node(1);
+        ASTNode *add_node = create_binary_op_node(OP_ADD, $2, num_node);
+        $$ = create_assignment_node($2, add_node);
+    }
 |   DEC_OP unary_expression
-|   unary_operator unary_expression
+    {
+        ASTNode *num_node = create_number_node(1);
+        ASTNode *sub_node = create_binary_op_node(OP_SUB, $2, num_node);
+        $$ = create_assignment_node($2, sub_node);
+    }
+|   '+' unary_expression 
+    { $$ = $2; }
+|   '-' unary_expression
+    {
+        $$ = create_unary_op_node(
+            OP_UNARY_MINUS, $2
+        );
+    }
+|   NOT_OP unary_expression
+    {
+        $$ = create_unary_op_node(
+            OP_LOGICAL_NOT, $2
+        );
+    }
 ;
 
 postfix_expression:

@@ -102,6 +102,7 @@ false                         { _("FALSE_LITERAL"); yylval.bool_val = 0; return 
 "*"                           { _("ASTERISK");        return '*'; }
 "/"                           { _("SLASH");           return '/'; }
 "?"                           { _("QUESTION_MARK");        return '?'; }
+
 .   {}
 %%
 

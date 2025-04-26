@@ -18,13 +18,17 @@ typedef enum {
 
 
 typedef enum {
-    // Binary operations
     OP_ADD,
     OP_SUB,
     OP_MUL,
     OP_DIV,
 } BinaryOpType;
 
+typedef enum {
+    OP_UNARY_MINUS,
+    OP_UNARY_PLUS,
+    OP_LOGICAL_NOT,
+} UnaryOpType;
 
 typedef struct ASTNode ASTNode;
 
@@ -55,6 +59,10 @@ struct ASTNode {
             ASTNode *left;
             ASTNode *right;
         } binary_op;
+        struct {
+            UnaryOpType op;
+            ASTNode *operand;
+        } unary_op;
     } meta;
 };
 
@@ -68,4 +76,5 @@ ASTNode *create_var_node(char *var_name);
 ASTNode *create_assignment_node(ASTNode *var, ASTNode *value);
 
 ASTNode *create_binary_op_node(BinaryOpType op, ASTNode *left, ASTNode *right);
+ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand);
 #endif // AST_H

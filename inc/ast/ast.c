@@ -138,10 +138,14 @@ ASTNode *create_condition_node(ASTNode *condition, ASTNode *then_case, ASTNode *
     return node;
 }
 
-ASTNode *create_var_declaration_node(ASTNode *identifier, ASTNode *init) {
-    printf("\nCreating a declaration node\n");
+ASTNode *create_var_declaration_node(char *name, char* type, ASTNode *init) {
+    if (init == NULL) {
+        printf("\nCreating a declaration node (var_name: %s, type: %s)\n", name, type);
+    } else {
+        printf("\nCreating a declaration+initialization node (var_name: %s, type: %s)\n", name, type);
+    }
     ASTNode *node = create_node(NODE_DECLARATION);
-    node->meta.declaration.name = "asdf";
+    node->meta.declaration.name = name;
     node->meta.declaration.init = init;
     return node; 
 }

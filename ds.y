@@ -100,17 +100,11 @@ type_specifier:
 declaration: 
     DECLARE IDENTIFIER[var_name] ':' type_specifier[type] ';'
         {
-            printf(
-                "\nDeclaring %s variable %s\n", 
-                $type, $var_name
-            );
+            $$ = create_var_declaration_node($var_name, $type, NULL);
         }
 |   DECLARE IDENTIFIER[var_name] ':' type_specifier[type] assignment_operator expression ';'
         {
-            printf(
-                "\nDeclaring and initializating %s variable %s\n", 
-                $type, $var_name
-            );
+            $$ = create_var_declaration_node($var_name, $type, $expression);
         }
 ;
 
@@ -300,7 +294,7 @@ postfix_expression:
 ;
 atom:
     IDENTIFIER
-    { $$ = create_var_node($1); }
+    { $$ = create_var_node($1); }  
 |   TRUE_LITERAL
     { $$ = create_bool_node($1); } 
 |   FALSE_LITERAL

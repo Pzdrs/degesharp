@@ -66,7 +66,7 @@ extern FILE *yyin;
 %type 
     <str_val> declaration type_specifier
     <assign_op> assignment_operator
-    <node> atom postfix_expression
+    <node> atom expression postfix_expression unary_expression assignment_expression
 
 %%
 
@@ -98,7 +98,7 @@ declaration:
                 $type, $var_name
             );
         }
-|   DECLARE IDENTIFIER[var_name] ':' type_specifier[type] assignment_operator expr ';'
+|   DECLARE IDENTIFIER[var_name] ':' type_specifier[type] assignment_operator expression ';'
         {
             printf(
                 "\nDeclaring and initializating %s variable %s\n", 
@@ -110,12 +110,12 @@ declaration:
 
 expression_statement:
     ';'
-|   expr ';'
+|   expression ';'
 
-expr:
+expression:
     assignment_expression
     // Allows for multiple assignments within an expression, e.g., x = 5, y = 10, z = x + y;
-|   expr ',' assignment_expression
+|   expression ',' assignment_expression
 ;
 
 // Allows the use of assignment operator in expressions
@@ -131,14 +131,27 @@ assignment_expression:
     {
         switch ($assignment_operator) {
             case ASSIGN_OP:
+                $$ = create_assignment_node($1, $3);
                 break;
             case ADD_ASSIGN_OP:
+                $$ = create_assignment_node(
+                    $1, create_binary_op_node(OP_ADD, $1, $3)
+                );
                 break;
             case SUB_ASSIGN_OP:
+                $$ = create_assignment_node(
+                    $1, create_binary_op_node(OP_SUB, $1, $3)
+                );
                 break;
             case MUL_ASSIGN_OP:
+                $$ = create_assignment_node(
+                    $1, create_binary_op_node(OP_MUL, $1, $3)
+                );
                 break;
             case DIV_ASSIGN_OP:
+                $$ = create_assignment_node(
+                    $1, create_binary_op_node(OP_DIV, $1, $3)
+                );
                 break;
         }
     }
@@ -156,7 +169,7 @@ assignment_operator:
 // Ternary operator
 conditional_expression:
     logical_or_expression
-|   logical_or_expression '?' expr ':' conditional_expression
+|   logical_or_expression '?' expression ':' conditional_expression
 ;
 
 logical_or_expression:
@@ -212,9 +225,16 @@ postfix_expression:
     atom
 |   postfix_expression INC_OP
     {
-       printf("%d", $1->value); 
+        ASTNode *num_node = create_number_node(1);
+        ASTNode *add_node = create_binary_op_node(OP_ADD, $1, num_node);
+        $$ = create_assignment_node($1, add_node);
     }
 |   postfix_expression DEC_OP
+    {
+        ASTNode *num_node = create_number_node(1);
+        ASTNode *sub_node = create_binary_op_node(OP_SUB, $1, num_node);
+        $$ = create_assignment_node($1, sub_node);
+    }
 /* Function calls
 |   postfix_expression '(' ')'
 |   postfix_expression '(' argument_list ')'
@@ -222,14 +242,17 @@ postfix_expression:
 ;
 atom:
     IDENTIFIER
-|   TRUE_LITERAL 
-|   FALSE_LITERAL 
+    { $$ = create_var_node($1); }
+|   TRUE_LITERAL
+    { $$ = create_bool_node($1); } 
+|   FALSE_LITERAL
+    { $$ = create_bool_node($1); }
 |   STRING_LITERAL
+    { $$ = create_string_node($1); }
 |   CONSTANT
-    {
-       $$ = create_number_node($1);
-    }
-|   '(' expr ')'
+    { $$ = create_number_node($1); }
+|   '(' expression ')'
+    { $$ = $expression;}
 ;
 
 %%

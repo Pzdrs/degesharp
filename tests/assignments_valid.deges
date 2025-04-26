@@ -1,12 +1,16 @@
 jakoby A : str;
 jakoby b : int;
+jakoby c : bool;
 
 A = "testik";
 b = 10;
 b = 0x10;
+c = true;
+c = false;
 
 jakoby c : int = 10;
 jakoby d : str = "testik";
+jakoby e : bool = true;
 
 b += 10;
 b -= 10;

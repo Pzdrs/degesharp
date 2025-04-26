@@ -10,7 +10,7 @@ lexer: clean
 	@$(CC) lex.yy.c inc/debug.c 
 
 parser: clean
-	bison -d ds.y -Wcounterexamples
+	bison -d ds.y -Wcounterexamples 
 	flex ds.l
 	@$(CC) lex.yy.c ds.tab.c inc/debug.c inc/ast/ast.c -lm
 

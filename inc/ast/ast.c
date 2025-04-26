@@ -1,8 +1,17 @@
 #include <stdio.h>
 #include "ast.h"
 
+char *binary_op_name(BinaryOpType op) {
+    switch (op) {
+        case OP_ADD: return "addition";
+        case OP_SUB: return "subtraction";
+        case OP_MUL: return "multiplication";
+        case OP_DIV: return "division";
+        default: return "unknown operation";
+    }
+}
+
 ASTNode *create_node(NodeType type) {
-    printf("Creating node of type: %d\n", type);
     ASTNode *node = (ASTNode *)malloc(sizeof(ASTNode));
     if (!node) {
         fprintf(stderr, "Memory allocation failed\n");
@@ -13,7 +22,46 @@ ASTNode *create_node(NodeType type) {
 }
 
 ASTNode *create_number_node(int value) {
+    printf("\nCreating a number node with value: %d\n", value);
     ASTNode *node = create_node(NODE_NUMBER);
-    node->value.number = value;
+    node->meta.number.value = value;
     return node;
+}
+
+ASTNode *create_string_node(char *string) {
+    printf("\nCreating a string node with value: %s\n", string);
+    ASTNode *node = create_node(NODE_STRING);
+    node->meta.string.value = string;
+    return node;
+}
+
+ASTNode *create_bool_node(u_int8_t boolean) {
+    printf("\nCreating a boolean node with value: %d\n", boolean);
+    ASTNode *node = create_node(NODE_BOOLEAN);
+    node->meta.boolean.value = boolean;
+    return node;
+}
+
+ASTNode *create_var_node(char *name) {
+    printf("\nCreating a variable node with name: %s\n", name);
+    ASTNode *node = create_node(NODE_VARIABLE);
+    node->meta.variable.name = name;
+    return node;
+}
+
+ASTNode *create_assignment_node(ASTNode *var, ASTNode *value) {
+    printf("\nCreating an assignment node\n");
+    ASTNode *node = create_node(NODE_ASSIGNMENT);
+    node->meta.assignment.var = var;
+    node->meta.assignment.value = value;
+    return node;
+}
+
+ASTNode *create_binary_op_node(BinaryOpType op, ASTNode *left, ASTNode *right) {
+    printf("\nCreating a binary operation node (%s)\n", binary_op_name(op));
+    ASTNode *node = create_node(NODE_BINARY_OP);
+    node->meta.binary_op.op = op;
+    node->meta.binary_op.left = left;
+    node->meta.binary_op.right = right;
+    return NULL;
 }

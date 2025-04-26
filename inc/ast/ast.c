@@ -7,6 +7,8 @@ char *binary_op_name(BinaryOpType op) {
         case OP_SUB: return "subtraction";
         case OP_MUL: return "multiplication";
         case OP_DIV: return "division";
+        case OP_LOGICAL_AND: return "logical AND";
+        case OP_LOGICAL_OR: return "logical OR";
         default: return "unknown operation";
     }
 }
@@ -15,6 +17,24 @@ char *unary_op_name(UnaryOpType op) {
     switch (op) {
         case OP_UNARY_MINUS: return "unary minus";
         case OP_LOGICAL_NOT: return "logical NOT";
+        default: return "unknown operation";
+    }
+}
+
+char *relation_op_name(RelationOpType op) {
+    switch (op) {
+        case OP_LT: return "less than";
+        case OP_GT: return "greater than";
+        case OP_LE: return "less than or equal to";
+        case OP_GE: return "greater than or equal to";
+        default: return "unknown operation";
+    }
+}
+
+char *equality_op_name(EqualityOpType op) {
+    switch (op) {
+        case OP_EQ: return "equal to";
+        case OP_NE: return "not equal to";
         default: return "unknown operation";
     }
 }
@@ -79,5 +99,23 @@ ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand) {
     ASTNode *node = create_node(NODE_UNARY_OP);
     node->meta.unary_op.op = op;
     node->meta.unary_op.operand = operand;
+    return node;
+}
+
+ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *right) {
+    printf("\nCreating a relation operation node (%s)\n", relation_op_name(op));
+    ASTNode *node = create_node(NODE_RELATION_OP);
+    node->meta.relation.op = op;
+    node->meta.relation.left = left;
+    node->meta.relation.right = right;
+    return node;
+}
+
+ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *right) {
+    printf("\nCreating an equality operation node (%s)\n", equality_op_name(op));
+    ASTNode *node = create_node(NODE_EQUALITY_OP);
+    node->meta.equality.op = op;
+    node->meta.equality.left = left;
+    node->meta.equality.right = right;
     return node;
 }

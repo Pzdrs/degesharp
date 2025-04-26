@@ -66,7 +66,7 @@ extern FILE *yyin;
 %type 
     <str_val> declaration type_specifier
     <assign_op> assignment_operator
-    <node> atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression
+    <node> atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression
 
 %%
 
@@ -174,25 +174,37 @@ conditional_expression:
 logical_or_expression:
     logical_and_expression
 |   logical_or_expression OR_OP logical_and_expression
+    {
+        $$ = create_binary_op_node(OP_LOGICAL_OR, $1, $3);
+    }
 ;
 
 logical_and_expression:
     equality_expression
 |   logical_and_expression AND_OP equality_expression
+    {
+        $$ = create_binary_op_node(OP_LOGICAL_AND, $1, $3);
+    }
 ;
 
 equality_expression:
     relational_expression
 |   equality_expression EQ_OP relational_expression
+    { $$ = create_equality_op_node(OP_EQ, $1, $3); }
 |   equality_expression NE_OP relational_expression
+    { $$ = create_equality_op_node(OP_NE, $1, $3); }
 ;
 
 relational_expression:
     additive_expression
 |   relational_expression GE_OP additive_expression
+    { $$ = create_relation_op_node(OP_GE, $1, $3); }
 |   relational_expression LE_OP additive_expression
+    { $$ = create_relation_op_node(OP_LE, $1, $3); }
 |   relational_expression '<' additive_expression
+    { $$ = create_relation_op_node(OP_LT, $1, $3); }
 |   relational_expression '>' additive_expression
+    { $$ = create_relation_op_node(OP_GT, $1, $3); }
 ;
 
 additive_expression:

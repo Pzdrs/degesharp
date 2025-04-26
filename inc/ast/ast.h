@@ -14,6 +14,9 @@ typedef enum {
     NODE_ASSIGNMENT,
     NODE_BINARY_OP,
     NODE_UNARY_OP,
+
+    NODE_RELATION_OP,
+    NODE_EQUALITY_OP,
 } NodeType;
 
 
@@ -22,12 +25,25 @@ typedef enum {
     OP_SUB,
     OP_MUL,
     OP_DIV,
+    OP_LOGICAL_AND,
+    OP_LOGICAL_OR,
 } BinaryOpType;
 
 typedef enum {
     OP_UNARY_MINUS,
     OP_LOGICAL_NOT,
 } UnaryOpType;
+
+typedef enum {
+    OP_LT,
+    OP_GT,
+    OP_LE,
+    OP_GE,
+} RelationOpType;
+typedef enum {
+    OP_EQ,
+    OP_NE,
+} EqualityOpType;
 
 typedef struct ASTNode ASTNode;
 
@@ -62,6 +78,17 @@ struct ASTNode {
             UnaryOpType op;
             ASTNode *operand;
         } unary_op;
+
+        struct {
+            EqualityOpType op;
+            ASTNode *left;
+            ASTNode *right;
+        } equality;
+        struct {
+            RelationOpType op;
+            ASTNode *left;
+            ASTNode *right;
+        } relation;
     } meta;
 };
 
@@ -76,4 +103,7 @@ ASTNode *create_assignment_node(ASTNode *var, ASTNode *value);
 
 ASTNode *create_binary_op_node(BinaryOpType op, ASTNode *left, ASTNode *right);
 ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand);
+
+ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *right);
+ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *right);
 #endif // AST_H

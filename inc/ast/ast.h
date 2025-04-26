@@ -5,6 +5,9 @@
 #include <stdbool.h>
 
 typedef enum {
+    NODE_ROOT,
+    NODE_DECLARATION,
+
     // Atoms
     NODE_VARIABLE,
     NODE_NUMBER,
@@ -95,8 +98,15 @@ struct ASTNode {
             ASTNode *then_case;
             ASTNode *else_case;
         } condition;
+
+        struct {
+            char *name;
+            ASTNode *init;
+        } declaration;
     } meta;
 };
+
+void print_ast(ASTNode *node);
 
 ASTNode *create_node(NodeType type);
 
@@ -113,4 +123,6 @@ ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand);
 ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *right);
 ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *right);
 ASTNode *create_condition_node(ASTNode* cond, ASTNode* then_case, ASTNode* else_case);
+
+ASTNode *create_var_declaration_node(ASTNode* identifier, ASTNode *init);
 #endif // AST_H

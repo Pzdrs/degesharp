@@ -13,6 +13,8 @@ void yyerror(const char *str);
 int yywrap() {} 
 
 extern FILE *yyin;
+
+ASTNode *root = NULL;
 %}
 %code requires {
     #include "inc/ast/ast.h"
@@ -66,12 +68,17 @@ extern FILE *yyin;
 %type 
     <str_val> declaration type_specifier
     <assign_op> assignment_operator
-    <node> atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression
+    <node> degesharp statement statement_list atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression
 
 %%
 
 degesharp: 
     statement_list
+    {
+        root = $1;
+        printf("Parsed successfully!\n");
+        print_ast(root);
+    }
 ;
 
 statement_list: 
@@ -80,8 +87,8 @@ statement_list:
 ;
 
 statement: 
-   expression_statement
-|  declaration 
+   expression_statement 
+|  declaration
 ;
 
 type_specifier:

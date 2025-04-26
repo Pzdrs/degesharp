@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include "ast.h"
 
+void print_ast(ASTNode *node) {
+    if (!node) return;
+
+    switch (node->type) {
+        default:
+            printf("Unknown node type\n");
+    }
+}
+
 char *binary_op_name(BinaryOpType op) {
     switch (op) {
         case OP_ADD: return "addition";
@@ -127,4 +136,12 @@ ASTNode *create_condition_node(ASTNode *condition, ASTNode *then_case, ASTNode *
     node->meta.condition.then_case = then_case;
     node->meta.condition.else_case = else_case;
     return node;
+}
+
+ASTNode *create_var_declaration_node(ASTNode *identifier, ASTNode *init) {
+    printf("\nCreating a declaration node\n");
+    ASTNode *node = create_node(NODE_DECLARATION);
+    node->meta.declaration.name = "asdf";
+    node->meta.declaration.init = init;
+    return node; 
 }

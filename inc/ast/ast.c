@@ -1,15 +1,6 @@
 #include <stdio.h>
 #include "ast.h"
 
-void print_ast(ASTNode *node) {
-    if (!node) return;
-
-    switch (node->type) {
-        default:
-            printf("Unknown node type\n");
-    }
-}
-
 char *binary_op_name(BinaryOpType op) {
     switch (op) {
         case OP_ADD: return "addition";
@@ -54,6 +45,45 @@ char *variable_type_name(VariableType type) {
         case T_STRING: return "string";
         case T_BOOL: return "boolean";
         default: return "unknown type";
+    }
+}
+
+void print_ast(ASTNode *node, int indent) {
+    if (!node) return;
+
+    if (node->type != NODE_STATEMENT_LIST) {
+        for (int i = 0; i < indent; i++) {
+            printf("  ");
+        }
+    }
+
+    switch (node->type) {
+        case NODE_STATEMENT_LIST:
+            print_ast(node->meta.statement_list.statement, indent);
+            print_ast(node->meta.statement_list.next, indent);
+            break;
+        case NODE_BINARY_OP:
+            printf("Binary operation node (%s)\n", binary_op_name(node->meta.binary_op.op));
+            print_ast(node->meta.binary_op.left, indent + 1);
+            print_ast(node->meta.binary_op.right, indent + 1);
+            break;
+        case NODE_DECLARATION:
+            printf("Declaration node (var_name: %s, type: %s)\n", node->meta.declaration.name, variable_type_name(node->meta.declaration.type));
+            print_ast(node->meta.declaration.init, indent + 1);
+            break;
+        case NODE_ASSIGNMENT:
+            printf("Assignment node\n");
+            print_ast(node->meta.assignment.var, indent + 1);
+            print_ast(node->meta.assignment.value, indent + 1);
+            break;
+        case NODE_NUMBER:
+            printf("Number node: %d\n", node->meta.number.value);
+            break;
+        case NODE_VARIABLE:
+            printf("Variable node: %s\n", node->meta.variable.name);
+            break;
+        default:
+            printf("Unknown node type: %d\n", node->type);
     }
 }
 
@@ -157,4 +187,12 @@ ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *ini
     node->meta.declaration.name = name;
     node->meta.declaration.init = init;
     return node; 
+}
+
+ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next) {
+    printf("\nCreating a statement list node\n");
+    ASTNode *node = create_node(NODE_STATEMENT_LIST);
+    node->meta.statement_list.statement = statement;
+    node->meta.statement_list.next = next;
+    return node;
 }

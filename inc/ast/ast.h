@@ -7,6 +7,8 @@
 typedef enum {
     NODE_ROOT,
     NODE_DECLARATION,
+    NODE_STATEMENT_LIST,
+    NODE_STATEMENT,
 
     // Atoms
     NODE_VARIABLE,
@@ -110,10 +112,15 @@ struct ASTNode {
             VariableType type;
             ASTNode *init;
         } declaration;
+
+        struct {
+            struct ASTNode *statement;
+            struct ASTNode *next;
+        } statement_list;
     } meta;
 };
 
-void print_ast(ASTNode *node);
+void print_ast(ASTNode *node, int indent);
 
 ASTNode *create_node(NodeType type);
 
@@ -132,4 +139,6 @@ ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *righ
 ASTNode *create_condition_node(ASTNode* cond, ASTNode* then_case, ASTNode* else_case);
 
 ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *init);
+ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next);
+ASTNode *create_statement_node(ASTNode *statement);
 #endif // AST_H

@@ -67,10 +67,9 @@ ASTNode *root = NULL;
     DIV_ASSIGN  "/="
 
 %type 
-    <str_val> declaration
     <assign_op> assignment_operator
     <var_type> type_specifier
-    <node> degesharp statement statement_list atom expression postfix_expression unary_expression assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression
+    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression
 
 %%
 
@@ -78,25 +77,26 @@ degesharp:
     statement_list
     {
         root = $1;
-        printf("Parsed successfully!\n");
-        print_ast(root);
+        printf("Parsed successfully!\n\n\nAST\n----------------------------------\n");
+        printf("ROOT NODE\n");
+        print_ast(root, 1);
     }
 ;
 
 statement_list: 
     statement
+    {
+        $$ = create_statement_list_node($1, NULL);
+    }
 |   statement_list statement
+    {
+        $$ = create_statement_list_node($1, $2);
+    }
 ;
 
 statement: 
    expression_statement 
 |  declaration
-;
-
-type_specifier:
-    TYPE_INT { $$ = T_INT; }
-|   TYPE_STRING { $$ = T_STRING; }
-|   TYPE_BOOL { $$ = T_BOOL; }
 ;
 
 declaration: 
@@ -110,9 +110,14 @@ declaration:
         }
 ;
 
+type_specifier:
+    TYPE_INT { $$ = T_INT; }
+|   TYPE_STRING { $$ = T_STRING; }
+|   TYPE_BOOL { $$ = T_BOOL; }
+;
 
 expression_statement:
-    ';'
+    ';' { $$ = NULL; }
 |   expression ';'
 
 expression:

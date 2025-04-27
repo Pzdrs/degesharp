@@ -1,0 +1,2 @@
+jakoby x : int = 10;
+x = x + 10;

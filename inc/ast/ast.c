@@ -79,6 +79,12 @@ void print_ast(ASTNode *node, int indent) {
         case NODE_NUMBER:
             printf("Number node: %d\n", node->meta.number.value);
             break;
+        case NODE_STRING:
+            printf("String node: %s\n", node->meta.string.value);
+            break;
+        case NODE_BOOLEAN:
+            printf("Boolean node: %d\n", node->meta.boolean.value);
+            break;
         case NODE_VARIABLE:
             printf("Variable node: %s\n", node->meta.variable.name);
             break;
@@ -186,6 +192,7 @@ ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *ini
     ASTNode *node = create_node(NODE_DECLARATION);
     node->meta.declaration.name = name;
     node->meta.declaration.init = init;
+    node->meta.declaration.type = type;
     return node; 
 }
 

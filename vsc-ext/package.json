@@ -1,29 +1,48 @@
 {
   "name": "degesharp",
-  "displayName": "Degesharp",
-  "description": "Degesharp language support",
-  "publisher": "pycrs.cz",
-  "categories": [
-    "Programming Languages"
-  ],
+  "displayName": "DegeSharp",
+  "description": "Syntax highlighting for the DegeSharp language",
+  "publisher": "Petr Boháč",
   "version": "1.0.0",
+  "icon": "assets/icon.png",
   "engines": {
     "vscode": "^1.99.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pzdrs/degesharp.git"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
   "scripts": {
     "package": "vsce package",
     "install": "code --install-extension degesharp-1.0.0.vsix",
-    "pinstall": "npm run package && npm run install"
+    "yaml": "npx js-yaml syntaxes/degesharp.tmLanguage.yaml > syntaxes/degesharp.tmLanguage.json",
+    "pinstall": "npm run yaml && npm run package && npm run install"
   },
-  "author": "Bc. Petr Boháč",
-  "license": "ISC",
   "contributes": {
     "languages": [
       {
         "id": "degesharp",
-        "extensions": [".deges"],
+        "aliases": [
+          "DegeSharp"
+        ],
+        "extensions": [
+          ".deges"
+        ],
         "configuration": "./language-configuration.json"
       }
+    ],
+    "grammars": [
+      {
+        "language": "degesharp",
+        "scopeName": "source.degesharp",
+        "path": "./syntaxes/degesharp.tmLanguage.json"
+      }
     ]
+  },
+  "devDependencies": {
+    "js-yaml": "^4.1.0"
   }
 }

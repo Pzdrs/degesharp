@@ -352,8 +352,8 @@ atom:
 
 // Parse error handler
 void yyerror(const char *str) {
-    fprintf(stderr,"error: %s\n", str);
-    fprintf(stderr,"error: %s\n", yytext);
+    fflush(stdout);
+	printf("\n%*s\n%*s\n", 0, "^", 0, str);
 }
 
 int main(int argc, char **argv) {

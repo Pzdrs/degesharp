@@ -1,0 +1,29 @@
+{
+  "name": "degesharp",
+  "displayName": "Degesharp",
+  "description": "Degesharp language support",
+  "publisher": "pycrs.cz",
+  "categories": [
+    "Programming Languages"
+  ],
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "scripts": {
+    "package": "vsce package",
+    "install": "code --install-extension degesharp-1.0.0.vsix",
+    "pinstall": "npm run package && npm run install"
+  },
+  "author": "Bc. Petr Boháč",
+  "license": "ISC",
+  "contributes": {
+    "languages": [
+      {
+        "id": "degesharp",
+        "extensions": [".deges"],
+        "configuration": "./language-configuration.json"
+      }
+    ]
+  }
+}

@@ -1,2 +1,4 @@
 loop (;;) ;
 loop (;;i++);
+loop (; i < 10;) ;
+loop (; True; ) 10;

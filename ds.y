@@ -115,6 +115,7 @@ selection_statement:
 ;
 
 iteration_statement:
+    // C89 style for loop (no declarations allowed in init - cant be fucked to change this at this point)
     FOR '(' expression_statement[init] expression_statement[cond] ')' statement[body]
     {
         $$ = create_for_node($init, $cond, NULL, $body);

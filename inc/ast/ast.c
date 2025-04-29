@@ -48,14 +48,16 @@ char *variable_type_name(VariableType type) {
     }
 }
 
+void pad(int indent) {
+    for (int i = 0; i < indent; i++) {
+        printf("  ");
+    }
+}
+
 void print_ast(ASTNode *node, int indent) {
     if (!node) return;
 
-    if (node->type != NODE_STATEMENT_LIST) {
-        for (int i = 0; i < indent; i++) {
-            printf("  ");
-        }
-    }
+    if (node->type != NODE_STATEMENT_LIST) pad(indent);
 
     switch (node->type) {
         case NODE_STATEMENT_LIST:
@@ -75,6 +77,54 @@ void print_ast(ASTNode *node, int indent) {
             printf("Assignment node\n");
             print_ast(node->meta.assignment.var, indent + 1);
             print_ast(node->meta.assignment.value, indent + 1);
+            break;
+        case NODE_EQUALITY_OP:
+            printf("Equality operation node (%s)\n", equality_op_name(node->meta.equality.op));
+            pad(indent + 1);
+            printf("Left operand:\n");
+            print_ast(node->meta.equality.left, indent + 2);
+
+            pad(indent + 1);
+            printf("Right operand:\n");
+            print_ast(node->meta.equality.right, indent + 2);
+            break;
+        case NODE_RELATION_OP:
+            printf("Relation operation node (%s)\n", relation_op_name(node->meta.relation.op));
+            pad(indent + 1);
+            printf("Left operand:\n");
+            print_ast(node->meta.relation.left, indent + 2);
+
+            pad(indent + 1);
+            printf("Right operand:\n");
+            print_ast(node->meta.relation.right, indent + 2);
+            break;
+        case NODE_TERNARY_OP:
+            printf("Ternary operation node\n");
+            pad(indent + 1);
+            printf("Condition:\n");
+            print_ast(node->meta.condition.cond, indent + 2);
+
+            pad(indent + 1);
+            printf("Then case:\n");
+            print_ast(node->meta.condition.then_case, indent + 2);
+
+            pad(indent + 1);
+            printf("Else case:\n");
+            print_ast(node->meta.condition.else_case, indent + 2);
+            break;
+        case NODE_CONDITION:
+            printf("Condition node\n");
+            pad(indent + 1);
+            printf("Condition:\n");
+            print_ast(node->meta.condition.cond, indent + 2);
+
+            pad(indent + 1);
+            printf("Then case:\n");
+            print_ast(node->meta.condition.then_case, indent + 2);
+
+            pad(indent + 1);
+            printf("Else case:\n");
+            print_ast(node->meta.condition.else_case, indent + 2);
             break;
         case NODE_NUMBER:
             printf("Number node: %d\n", node->meta.number.value);
@@ -171,6 +221,15 @@ ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *righ
     node->meta.equality.op = op;
     node->meta.equality.left = left;
     node->meta.equality.right = right;
+    return node;
+}
+
+ASTNode *create_conditional_expression_node(ASTNode *condition, ASTNode *then_expr, ASTNode *else_expr) {
+    printf("\nCreating a conditional expression node (ternary op)\n");
+    ASTNode *node = create_node(NODE_TERNARY_OP);
+    node->meta.condition.cond = condition;
+    node->meta.condition.then_case = then_expr;
+    node->meta.condition.else_case = else_expr;
     return node;
 }
 

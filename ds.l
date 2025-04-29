@@ -59,8 +59,8 @@ char* process_string(const char* text) {
 
 jakoby                        { _("DECLARE"); return DECLARE; }
 dyghej                        { _("PRINT");}
-cokdyz                        { _("IF");}
-jinak                         { _("ELSE");}
+cokdyz                        { _("IF");            return IF; }
+jinak                         { _("ELSE");          return ELSE; }
 a			                  { _("AND");             return AND_OP; }
 nebo			              { _("OR");              return OR_OP; }
 je                            { _("EQUAL");           return EQ_OP; }

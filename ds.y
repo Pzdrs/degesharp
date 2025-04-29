@@ -13,6 +13,10 @@ void yyerror(const char *str);
 int yywrap() {} 
 
 extern FILE *yyin;
+extern int yylineno;
+extern int yylloc;
+extern char *yytext;
+extern int yyleng;
 
 ASTNode *root = NULL;
 %}
@@ -52,6 +56,8 @@ ASTNode *root = NULL;
     TYPE_STRING
     TYPE_INT
     TYPE_BOOL
+    IF
+    ELSE
     INC_OP      "++"
     DEC_OP      "--"
     AND_OP      "a"
@@ -69,7 +75,7 @@ ASTNode *root = NULL;
 %type 
     <assign_op> assignment_operator
     <var_type> type_specifier
-    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression
+    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement
 
 %%
 
@@ -94,9 +100,21 @@ statement_list:
     }
 ;
 
+selection_statement:
+    IF '(' expression[cond] ')' statement[then_case]
+    {
+        $$ = create_condition_node($cond, $then_case, NULL);
+    }
+|   IF '(' expression[cond] ')' statement[then_case] ELSE statement[else_case]
+    {
+        $$ = create_condition_node($cond, $then_case, $else_case);
+    }
+;
+
 statement: 
    expression_statement 
 |  declaration
+|  selection_statement
 ;
 
 declaration: 
@@ -178,7 +196,7 @@ conditional_expression:
     logical_or_expression
 |   logical_or_expression '?' expression ':' conditional_expression
     {
-        $$ = create_condition_node($1, $3, $5);
+        $$ = create_conditional_expression_node($1, $3, $5);
     }
 ;
 
@@ -319,6 +337,7 @@ atom:
 // Parse error handler
 void yyerror(const char *str) {
     fprintf(stderr,"error: %s\n", str);
+    fprintf(stderr,"error: %s\n", yytext);
 }
 
 int main(int argc, char **argv) {

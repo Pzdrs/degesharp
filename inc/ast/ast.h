@@ -22,7 +22,8 @@ typedef enum {
 
     NODE_RELATION_OP,
     NODE_EQUALITY_OP,
-    NODE_CONDITION
+    NODE_TERNARY_OP,
+    NODE_CONDITION,
 } NodeType;
 
 
@@ -136,7 +137,8 @@ ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand);
 
 ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *right);
 ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *right);
-ASTNode *create_condition_node(ASTNode* cond, ASTNode* then_case, ASTNode* else_case);
+ASTNode *create_conditional_expression_node(ASTNode *cond, ASTNode *then_expr, ASTNode *else_expr);
+ASTNode *create_condition_node(ASTNode *cond, ASTNode *then_case, ASTNode *else_case);
 
 ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *init);
 ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next);

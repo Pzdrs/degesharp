@@ -1,82 +1,109 @@
 # DegeSharp
 
-### Jak se to čte?
+### How does one pronounce it?
+
 **DegeSharp** ([degešárp])
 
-## Použití
-**Proměnné**
+## Syntax
 
-Tři datové typy: `int`, `bool`, `string`
+### Variables
+
+- Three data types: `int`, `bool`, `string`
+- Decimal and hexadecimal integers
 
 ```
-# Celá čísla
+# Base 10 integer
 -?[0-9]+
-# Hex číslo
+# Base 16 integer
 0x[0-9a-f]+
+```
 
+- Variable declaration with/without initialization
+
+```
 jakoby : int x = 10;
-jakoby : int y = 20; 
-jakoby : int z = x + y;
+jakoby : str y = "Hello world";
+jakoby : bool z = true;
 
-jakoby : bool je_vetsi = x > y;
+jakoby : int a;
+jakoby : str b;
+jakoby : bool c;
 
-jakoby : str jmeno = "Degešárp";
+a = 10;
+b = "Hello world";
+c = true;
 ```
 
-**Porovnávání hodnot**
+### Comparing values
+
 ```
-# Analogicky jako u Pythonu
+# Analogically to C
 x > y
 x >= y
 x < y
 x <= y
 
-# Relace == je nyní "je"
+# Relation == replaced by "je"
 x je y
-# Relace != je nyní "neni"
+# Relation != replaced by "neni"
 x neni y
 ```
 
-**Aritmetické operace**
+### Arithmetic
+
 ```
-# Unární
+# Unary operations
 -y
 
-# Binární
+# Binary operations
 x + y;
 x - y;
 x * y;
 x / y;
 ```
-**Logické výrazy a podmínky**
+
+### Logical operations
+
 ```
-# Logický součin (AND) byl vyměněn za "a"
-# Logický součet (OR) byl vyměněn za "nebo"
-# Logická negace (NOT) byla vyměněna za "nene"
+# Conjunction (AND) replaced by "a"
+# Disjunction (OR) replaced by "nebo"
+# Negation (NOT) replaced by "nene"
 
-jakoby kladne_obe = x > 0 a y > 0;
-jakoby kladne_aspon_jedno = x > 0 nebo y > 0;
-jakoby kladne_nebo_zaporne = (x > 0 a y > 0) nebo (x < 0 a y < 0);
-jakoby negace = nene kladne_nebo_zaporne;
+jakoby both_positive : bool = x > 0 a y > 0;
+jakoby one_positive : bool = x > 0 nebo y > 0;
+jakoby positive_or_negative : bool = (x > 0 a y > 0) nebo (x < 0 a y < 0);
+jakoby negation = nene positive_or_negative;
+```
 
-cokdyz ([condition]) {
-    ...
+```
+# Conditional statement
+
+cokdyz (<condition>) {
+    // do something
 } [jinak] {
-
+    // do something else
 }
 ```
 
-**Iterace**
+### Iteration
 
-For loop
+#### For loops
+
+For *reasons*, the `for` loop's initialization doesn't support variable declarations, i.e. it conforms to the **C89** standard instead of C99.
+
 ```
-cokdyz (x*2 je y) {
-    loop(jakoby i = 0; i < 10; i = i + 1) {
-        povidam(x);
-        # Continue statement
-        skip;
-        # Break statement
-        vypadny;
-    }
+// int initializes to 0 by default, so lets initialize it to 69 for the sake of example
+jakoby i : int = 69;
+
+loop (i = 0; i < 10; i = i + 1) {
+    // do something
+}
+
+// The iteration section is optional
+loop (i = 0; i < 10;) i++;
+
+// Infinite loop
+loop (;;) {
+    // do something
 }
 ```

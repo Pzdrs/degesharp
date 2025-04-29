@@ -1,5 +1,4 @@
 loop (;;) ;
 loop (;;i++);
 loop (; i < 10;) ;
-loop (; True; ) 10;
-loop (int i = 0;) ;
+loop (; True; ) vypadny;

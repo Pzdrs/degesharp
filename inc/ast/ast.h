@@ -27,6 +27,11 @@ typedef enum {
 
     // Iteration
     NODE_FOR,
+    
+    // Jump
+    NODE_RETURN,
+    NODE_BREAK,
+    NODE_CONTINUE,
 } NodeType;
 
 
@@ -124,6 +129,10 @@ struct ASTNode {
 
         struct {
             struct {
+                ASTNode *expr;
+            } return_statement;
+
+            struct {
                 ASTNode *init;
                 ASTNode *cond;
                 ASTNode *iter;
@@ -157,4 +166,8 @@ ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next);
 ASTNode *create_statement_node(ASTNode *statement);
 
 ASTNode *create_for_node(ASTNode *init, ASTNode *cond, ASTNode *iter, ASTNode *body);
+
+ASTNode *create_return_node(ASTNode *value);
+ASTNode *create_break_node();
+ASTNode *create_continue_node();
 #endif // AST_H

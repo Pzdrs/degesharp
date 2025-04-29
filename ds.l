@@ -57,54 +57,57 @@ char* process_string(const char* text) {
 "//".*                              { _("COMMENT"); }
 "/*"[^*]*"*"([^/][^*]*"*"[^/])*"/"  { _("COMMENT_BLOCK"); }
 
-jakoby                        { _("DECLARE"); return DECLARE; }
-dyghej                        { _("PRINT");}
-cokdyz                        { _("IF");            return IF; }
-jinak                         { _("ELSE");          return ELSE; }
-loop                          { _("FOR");         return FOR; }  
-a			                  { _("AND");             return AND_OP; }
-nebo			              { _("OR");              return OR_OP; }
-je                            { _("EQUAL");           return EQ_OP; }
-neni                          { _("NOT_EQUAL");       return NE_OP; }
-nene                          { _("NOT");             return NOT_OP; }
-true                          { _("TRUE_LITERAL"); yylval.bool_val = 1; return TRUE_LITERAL; }
-false                         { _("FALSE_LITERAL"); yylval.bool_val = 0; return FALSE_LITERAL; }
+jakoby                              { _("DECLARE");         return DECLARE; }
+dyghej                              { _("PRINT");}
+cokdyz                              { _("IF");              return IF; }
+jinak                               { _("ELSE");            return ELSE; }
+loop                                { _("FOR");             return FOR; }  
+a			                        { _("AND");             return AND_OP; }
+nebo			                    { _("OR");              return OR_OP; }
+vypadny                             { _("BREAK");           return BREAK; }
+skip                                { _("CONTINUE");        return CONTINUE; }
+tadymas                             { _("RETURN");          return RETURN; }
+je                                  { _("EQUAL");           return EQ_OP; }
+neni                                { _("NOT_EQUAL");       return NE_OP; }
+nene                                { _("NOT");             return NOT_OP; }
+true                                { _("TRUE_LITERAL"); yylval.bool_val = 1; return TRUE_LITERAL; }
+false                               { _("FALSE_LITERAL"); yylval.bool_val = 0; return FALSE_LITERAL; }
 
-{L}({L}|{D})*		           { return check_type(); }
+{L}({L}|{D})*		                { return check_type(); }
 
-([1-9][0-9_]*|0)              { _("CONSTANT_INT"); yylval.num_val = atoi(yytext); return CONSTANT;}
-0[xX]{H}+                     { _("CONSTANT_HEX"); yylval.num_val = strtol(yytext, NULL, 0); return CONSTANT; }
+([1-9][0-9_]*|0)                    { _("CONSTANT_INT"); yylval.num_val = atoi(yytext); return CONSTANT;}
+0[xX]{H}+                           { _("CONSTANT_HEX"); yylval.num_val = strtol(yytext, NULL, 0); return CONSTANT; }
 
-\"(\\.|[^\\"])*\"	          { _("STRING_LITERAL"); yylval.str_val = process_string(yytext); return STRING_LITERAL; }
+\"(\\.|[^\\"])*\"	                { _("STRING_LITERAL"); yylval.str_val = process_string(yytext); return STRING_LITERAL; }
 
-"++"			            { _("INCREMENT");       return INC_OP; }
-"--"			            { _("DECREMENT");       return DEC_OP; }
+"++"			                    { _("INCREMENT");       return INC_OP; }
+"--"			                    { _("DECREMENT");       return DEC_OP; }
 
-">="                          { _("GREAT_OR_EQUAL");  return GE_OP; }
-"<="                          { _("LESS_OR_EQUAL");   return LE_OP; }
+">="                                { _("GREAT_OR_EQUAL");  return GE_OP; }
+"<="                                { _("LESS_OR_EQUAL");   return LE_OP; }
 
-";"                           { _("SEMICOLON");     return ';'; }
-":"                           { _("COLON");        return ':'; }
+";"                                 { _("SEMICOLON");       return ';'; }
+":"                                 { _("COLON");           return ':'; }
 
-"="                           { _("ASSIGN");        return '='; }
-"+="                          { _("ADD_ASSIGN");    return ADD_ASSIGN; }
-"-="                          { _("SUB_ASSIGN");    return SUB_ASSIGN; }
-"*="                          { _("MUL_ASSIGN");    return MUL_ASSIGN; }
-"/="                          { _("DIV_ASSIGN");    return DIV_ASSIGN; }
+"="                                 { _("ASSIGN");          return '='; }
+"+="                                { _("ADD_ASSIGN");      return ADD_ASSIGN; }
+"-="                                { _("SUB_ASSIGN");      return SUB_ASSIGN; }
+"*="                                { _("MUL_ASSIGN");      return MUL_ASSIGN; }
+"/="                                { _("DIV_ASSIGN");      return DIV_ASSIGN; }
 
-">"                           { _("GREATER_THAN");    return '>'; }
-"<"                           { _("LESS_THAN");       return '<'; }
-"("                           { _("OPEN_PAREN");      return '('; }
-")"                           { _("CLOSE_PAREN");     return ')'; }
-"{"                           { _("OPEN_BRACE");      return '{'; }
-"}"                           { _("CLOSE_BRACE");     return '}'; }
-"+"                           { _("PLUS");            return '+'; }
-"-"                           { _("MINUS");           return '-'; }
-"*"                           { _("ASTERISK");        return '*'; }
-"/"                           { _("SLASH");           return '/'; }
-"?"                           { _("QUESTION_MARK");        return '?'; }
+">"                                 { _("GREATER_THAN");    return '>'; }
+"<"                                 { _("LESS_THAN");       return '<'; }
+"("                                 { _("OPEN_PAREN");      return '('; }
+")"                                 { _("CLOSE_PAREN");     return ')'; }
+"{"                                 { _("OPEN_BRACE");      return '{'; }
+"}"                                 { _("CLOSE_BRACE");     return '}'; }
+"+"                                 { _("PLUS");            return '+'; }
+"-"                                 { _("MINUS");           return '-'; }
+"*"                                 { _("ASTERISK");        return '*'; }
+"/"                                 { _("SLASH");           return '/'; }
+"?"                                 { _("QUESTION_MARK");   return '?'; }
 
-.   {}
+.                                   {}
 %%
 
 #define MATCH_TYPE(name, token) if (strcmp(yytext, name) == 0) { _(#token); return token; }

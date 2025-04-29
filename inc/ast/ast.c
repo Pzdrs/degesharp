@@ -144,6 +144,18 @@ void print_ast(ASTNode *node, int indent) {
             printf(node->meta.iteration.for_loop.body ? "Body:\n" : "No body\n");
             print_ast(node->meta.iteration.for_loop.body, indent + 2);
             break;
+        case NODE_RETURN:
+            printf("Return node\n");
+            pad(indent + 1);
+            printf(node->meta.iteration.return_statement.expr ? "Return value:\n" : "No return value\n");
+            print_ast(node->meta.iteration.return_statement.expr, indent + 2);
+            break;
+        case NODE_BREAK:
+            printf("Break node\n");
+            break;
+        case NODE_CONTINUE:
+            printf("Continue node\n");
+            break;
         case NODE_NUMBER:
             printf("Number node: %d\n", node->meta.number.value);
             break;
@@ -288,5 +300,24 @@ ASTNode *create_for_node(ASTNode *init, ASTNode *condition, ASTNode *iter, ASTNo
     node->meta.iteration.for_loop.cond = condition;
     node->meta.iteration.for_loop.iter = iter;
     node->meta.iteration.for_loop.body = body;
+    return node;
+}
+
+ASTNode *create_return_node(ASTNode *value) {
+    printf("\nCreating a return node\n");
+    ASTNode *node = create_node(NODE_RETURN);
+    node->meta.iteration.return_statement.expr = value;
+    return node;
+}
+
+ASTNode *create_break_node() {
+    printf("\nCreating a break node\n");
+    ASTNode *node = create_node(NODE_BREAK);
+    return node;
+}
+
+ASTNode *create_continue_node() {
+    printf("\nCreating a continue node\n");
+    ASTNode *node = create_node(NODE_CONTINUE);
     return node;
 }

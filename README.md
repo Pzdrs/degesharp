@@ -6,15 +6,21 @@
 ## Použití
 **Proměnné**
 
+Tři datové typy: `int`, `bool`, `string`
+
 ```
 # Celá čísla
 -?[0-9]+
 # Hex číslo
 0x[0-9a-f]+
 
-jakoby x = 10;
-jakoby y = 20; 
-jakoby z = x + y;
+jakoby : int x = 10;
+jakoby : int y = 20; 
+jakoby : int z = x + y;
+
+jakoby : bool je_vetsi = x > y;
+
+jakoby : str jmeno = "Degešárp";
 ```
 
 **Porovnávání hodnot**
@@ -34,7 +40,6 @@ x neni y
 **Aritmetické operace**
 ```
 # Unární
-+x
 -y
 
 # Binární
@@ -61,7 +66,9 @@ cokdyz ([condition]) {
 }
 ```
 
-**Forloop**
+**Iterace**
+
+For loop
 ```
 cokdyz (x*2 je y) {
     loop(jakoby i = 0; i < 10; i = i + 1) {

@@ -51,14 +51,17 @@ ASTNode *root = NULL;
     TRUE_LITERAL
     FALSE_LITERAL
 
-%token 
-    DECLARE
-    TYPE_STRING
-    TYPE_INT
-    TYPE_BOOL
-    IF
-    ELSE
-    FOR
+%token
+    BREAK       "vypadny"
+    CONTINUE    "skip"
+    RETURN      "tadymas"
+    DECLARE     "jakoby"
+    TYPE_STRING "str"
+    TYPE_INT    "int"
+    TYPE_BOOL   "bool"
+    IF          "cokdyz"
+    ELSE        "jinak"
+    FOR         "loop"
     INC_OP      "++"
     DEC_OP      "--"
     AND_OP      "a"
@@ -76,7 +79,7 @@ ASTNode *root = NULL;
 %type 
     <assign_op> assignment_operator
     <var_type> type_specifier
-    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement
+    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement jump_statement
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -131,7 +134,15 @@ statement:
 |  declaration
 |  selection_statement
 |  iteration_statement
+|  jump_statement
 ;
+
+jump_statement:
+    BREAK ';' { $$ = create_break_node(); }
+|   CONTINUE ';' { $$ = create_continue_node(); }
+|   RETURN ';' { $$ = create_return_node(NULL); }
+|   RETURN expression[return_value] ';' { $$ = create_return_node($return_value); }
+;    
 
 declaration: 
     DECLARE IDENTIFIER[var_name] ':' type_specifier[type] ';'

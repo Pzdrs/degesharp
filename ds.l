@@ -61,6 +61,7 @@ jakoby                        { _("DECLARE"); return DECLARE; }
 dyghej                        { _("PRINT");}
 cokdyz                        { _("IF");            return IF; }
 jinak                         { _("ELSE");          return ELSE; }
+loop                          { _("FOR");         return FOR; }  
 a			                  { _("AND");             return AND_OP; }
 nebo			              { _("OR");              return OR_OP; }
 je                            { _("EQUAL");           return EQ_OP; }

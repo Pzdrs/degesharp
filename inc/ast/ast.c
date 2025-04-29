@@ -126,6 +126,24 @@ void print_ast(ASTNode *node, int indent) {
             printf("Else case:\n");
             print_ast(node->meta.condition.else_case, indent + 2);
             break;
+        case NODE_FOR:
+            printf("For loop node\n");
+            pad(indent + 1);
+            printf(node->meta.iteration.for_loop.init ? "Initialization:\n" : "No initialization\n");
+            print_ast(node->meta.iteration.for_loop.init, indent + 2);
+
+            pad(indent + 1);
+            printf(node->meta.iteration.for_loop.cond ? "Condition:\n" : "No condition\n");
+            print_ast(node->meta.iteration.for_loop.cond, indent + 2);
+
+            pad(indent + 1);
+            printf(node->meta.iteration.for_loop.iter ? "Iteration:\n" : "No iteration\n");
+            print_ast(node->meta.iteration.for_loop.iter, indent + 2);
+
+            pad(indent + 1);
+            printf(node->meta.iteration.for_loop.body ? "Body:\n" : "No body\n");
+            print_ast(node->meta.iteration.for_loop.body, indent + 2);
+            break;
         case NODE_NUMBER:
             printf("Number node: %d\n", node->meta.number.value);
             break;
@@ -260,5 +278,15 @@ ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next) {
     ASTNode *node = create_node(NODE_STATEMENT_LIST);
     node->meta.statement_list.statement = statement;
     node->meta.statement_list.next = next;
+    return node;
+}
+
+ASTNode *create_for_node(ASTNode *init, ASTNode *condition, ASTNode *iter, ASTNode *body) {
+    printf("\nCreating a for node\n");
+    ASTNode *node = create_node(NODE_FOR);
+    node->meta.iteration.for_loop.init = init;
+    node->meta.iteration.for_loop.cond = condition;
+    node->meta.iteration.for_loop.iter = iter;
+    node->meta.iteration.for_loop.body = body;
     return node;
 }

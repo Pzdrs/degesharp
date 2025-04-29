@@ -24,6 +24,9 @@ typedef enum {
     NODE_EQUALITY_OP,
     NODE_TERNARY_OP,
     NODE_CONDITION,
+
+    // Iteration
+    NODE_FOR,
 } NodeType;
 
 
@@ -118,6 +121,15 @@ struct ASTNode {
             struct ASTNode *statement;
             struct ASTNode *next;
         } statement_list;
+
+        struct {
+            struct {
+                ASTNode *init;
+                ASTNode *cond;
+                ASTNode *iter;
+                ASTNode *body;
+            } for_loop;
+        } iteration;
     } meta;
 };
 
@@ -143,4 +155,6 @@ ASTNode *create_condition_node(ASTNode *cond, ASTNode *then_case, ASTNode *else_
 ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *init);
 ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next);
 ASTNode *create_statement_node(ASTNode *statement);
+
+ASTNode *create_for_node(ASTNode *init, ASTNode *cond, ASTNode *iter, ASTNode *body);
 #endif // AST_H

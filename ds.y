@@ -58,6 +58,7 @@ ASTNode *root = NULL;
     TYPE_BOOL
     IF
     ELSE
+    FOR
     INC_OP      "++"
     DEC_OP      "--"
     AND_OP      "a"
@@ -75,7 +76,7 @@ ASTNode *root = NULL;
 %type 
     <assign_op> assignment_operator
     <var_type> type_specifier
-    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement
+    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement
 
 %%
 
@@ -111,10 +112,22 @@ selection_statement:
     }
 ;
 
+iteration_statement:
+    FOR '(' expression_statement[init] expression_statement[cond] ')' statement[body]
+    {
+        $$ = create_for_node($init, $cond, NULL, $body);
+    }
+|   FOR '(' expression_statement[init] expression_statement[cond] expression[iter] ')' statement[body]
+    {
+        $$ = create_for_node($init, $cond, $iter, $body);
+    }
+;
+
 statement: 
    expression_statement 
 |  declaration
 |  selection_statement
+|  iteration_statement
 ;
 
 declaration: 

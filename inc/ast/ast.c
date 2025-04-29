@@ -197,7 +197,7 @@ ASTNode *create_string_node(char *string) {
     return node;
 }
 
-ASTNode *create_bool_node(u_int8_t boolean) {
+ASTNode *create_bool_node(bool boolean) {
     printf("\nCreating a boolean node with value: %d\n", boolean);
     ASTNode *node = create_node(NODE_BOOLEAN);
     node->meta.boolean.value = boolean;

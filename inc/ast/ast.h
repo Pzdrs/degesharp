@@ -79,17 +79,13 @@ struct ASTNode {
             char *value;
         } string;
         struct {
-            u_int8_t value;
+            bool value;
         } boolean;
         struct {
             char *name;
         } variable;
 
-        struct {
-            ASTNode *var;
-            ASTNode *value;
-        } assignment;
-
+        // Operations
         struct {
             BinaryOpType op;
             ASTNode *left;
@@ -99,7 +95,8 @@ struct ASTNode {
             UnaryOpType op;
             ASTNode *operand;
         } unary_op;
-
+       
+        // Control flow
         struct {
             EqualityOpType op;
             ASTNode *left;
@@ -116,6 +113,7 @@ struct ASTNode {
             ASTNode *else_case;
         } condition;
 
+        // Declaration and assignment
         struct {
             char *name;
             VariableType type;
@@ -123,10 +121,11 @@ struct ASTNode {
         } declaration;
 
         struct {
-            struct ASTNode *statement;
-            struct ASTNode *next;
-        } statement_list;
+            ASTNode *var;
+            ASTNode *value;
+        } assignment;
 
+        // Iteration
         struct {
             struct {
                 ASTNode *expr;
@@ -139,6 +138,12 @@ struct ASTNode {
                 ASTNode *body;
             } for_loop;
         } iteration;
+
+        // Misc
+        struct {
+            struct ASTNode *statement;
+            struct ASTNode *next;
+        } statement_list;
     } meta;
 };
 
@@ -148,7 +153,7 @@ ASTNode *create_node(NodeType type);
 
 ASTNode *create_number_node(int value);
 ASTNode *create_string_node(char *string);
-ASTNode *create_bool_node(u_int8_t boolean);
+ASTNode *create_bool_node(bool boolean);
 ASTNode *create_var_node(char *var_name);
 
 ASTNode *create_assignment_node(ASTNode *var, ASTNode *value);

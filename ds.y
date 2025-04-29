@@ -78,6 +78,8 @@ ASTNode *root = NULL;
     <var_type> type_specifier
     <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 %%
 
 degesharp: 
@@ -102,7 +104,7 @@ statement_list:
 ;
 
 selection_statement:
-    IF '(' expression[cond] ')' statement[then_case]
+    IF '(' expression[cond] ')' statement[then_case] %prec LOWER_THAN_ELSE
     {
         $$ = create_condition_node($cond, $then_case, NULL);
     }

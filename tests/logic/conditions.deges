@@ -5,3 +5,6 @@ cokdyz (True) 0;
 
 cokdyz (True) 0; jinak 1;
 cokdyz (True) x=1; jinak jakoby marcel : str = "vibe coder";
+
+cokdyz (True) cokdyz(True) ; jinak ;
+cokdyz (True) cokdyz (True) ; jinak ; jinak ;

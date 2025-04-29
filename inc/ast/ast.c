@@ -119,11 +119,11 @@ void print_ast(ASTNode *node, int indent) {
             print_ast(node->meta.condition.cond, indent + 2);
 
             pad(indent + 1);
-            printf("Then case:\n");
+            printf(node->meta.condition.then_case ? "Then case:\n" : "No then case\n");
             print_ast(node->meta.condition.then_case, indent + 2);
 
             pad(indent + 1);
-            printf("Else case:\n");
+            printf(node->meta.condition.else_case ? "Else case:\n" : "No else case\n");
             print_ast(node->meta.condition.else_case, indent + 2);
             break;
         case NODE_FOR:

@@ -5,10 +5,8 @@
 #include <stdbool.h>
 
 typedef enum {
-    NODE_ROOT,
     NODE_DECLARATION,
     NODE_STATEMENT_LIST,
-    NODE_STATEMENT,
 
     // Atoms
     NODE_VARIABLE,

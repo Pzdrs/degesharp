@@ -20,11 +20,11 @@ repository:
   keywords:
     patterns:
       - name: keyword.control.degesharp
-        match: \b(vypadny|skip|tadymas|jakoby|cokdyz|jinak|loop|a|nene|je|neni|nebo)\b
+        match: \b(vypadny|skip|tadymas|jakoby|cokdyz|jinak|loop)\b
 
   types:
     patterns:
-      - name: storage.type.degesharp
+      - name: support.type.primitive.degesharp
         match: \b(int|str|bool)\b
 
   booleans:
@@ -55,10 +55,10 @@ repository:
       - name: keyword.operator.arithmetic.degesharp
         match: \+|-|\*|/
       - name: keyword.operator.logical.degesharp
-        match: \b(a|nebo|nene)\b
+        match: \b(?:a|nebo|nene)\b
       - name: keyword.operator.comparison.degesharp
-        match: \b(je|neni)\b|<=|>=|<|>
-
+        match: \b(?:je|neni)\b|<=|>=|<|>
+        
   identifiers:
     patterns:
       - name: variable.other.degesharp

@@ -7,6 +7,7 @@
 typedef enum {
     NODE_DECLARATION,
     NODE_STATEMENT_LIST,
+    NODE_COMPOUND_STATEMENT,
 
     // Atoms
     NODE_VARIABLE,
@@ -142,10 +143,15 @@ struct ASTNode {
             struct ASTNode *statement;
             struct ASTNode *next;
         } statement_list;
+        struct {
+            struct ASTNode *statement_list;
+        } compound_statement;
     } meta;
 };
 
 void print_ast(ASTNode *node, int indent);
+
+void interpret(ASTNode *node);
 
 ASTNode *create_node(NodeType type);
 
@@ -166,11 +172,12 @@ ASTNode *create_condition_node(ASTNode *cond, ASTNode *then_case, ASTNode *else_
 
 ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *init);
 ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next);
-ASTNode *create_statement_node(ASTNode *statement);
 
 ASTNode *create_for_node(ASTNode *init, ASTNode *cond, ASTNode *iter, ASTNode *body);
 
 ASTNode *create_return_node(ASTNode *value);
 ASTNode *create_break_node();
 ASTNode *create_continue_node();
+
+ASTNode *create_compound_statement_node(ASTNode *statement_list);
 #endif // AST_H

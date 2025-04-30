@@ -64,6 +64,12 @@ void print_ast(ASTNode *node, int indent) {
             print_ast(node->meta.statement_list.statement, indent);
             print_ast(node->meta.statement_list.next, indent);
             break;
+        case NODE_COMPOUND_STATEMENT:
+            printf("Compound statement node\n");
+            pad(indent + 1);
+            printf(node->meta.compound_statement.statement_list ? "Statement list:\n" : "No statement list\n");
+            print_ast(node->meta.compound_statement.statement_list, indent + 2);
+            break;
         case NODE_BINARY_OP:
             printf("Binary operation node (%s)\n", binary_op_name(node->meta.binary_op.op));
             print_ast(node->meta.binary_op.left, indent + 1);
@@ -321,3 +327,21 @@ ASTNode *create_continue_node() {
     ASTNode *node = create_node(NODE_CONTINUE);
     return node;
 }
+
+ASTNode *create_compound_statement_node(ASTNode *statement_list) {
+    if (statement_list == NULL) {
+        printf("\nCreating an empty compound statement node\n");
+    } else {
+        printf("\nCreating a compound statement node\n");
+    }
+    ASTNode *node = create_node(NODE_COMPOUND_STATEMENT);
+    node->meta.compound_statement.statement_list = statement_list;
+    return node;
+}    
+
+void interpret(ASTNode *root) {
+    printf("\nInterpreting the AST\n");
+    if (root == NULL) {
+        return;
+    }
+}    

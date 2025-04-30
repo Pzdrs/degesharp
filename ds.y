@@ -79,7 +79,7 @@ ASTNode *root = NULL;
 %type 
     <assign_op> assignment_operator
     <var_type> type_specifier
-    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement jump_statement
+    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement jump_statement compound_statement
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -92,6 +92,8 @@ degesharp:
         printf("Parsed successfully!\n\n\nAST\n----------------------------------\n");
         printf("ROOT NODE\n");
         print_ast(root, 1);
+
+        interpret(root);
     }
 ;
 
@@ -135,6 +137,12 @@ statement:
 |  selection_statement
 |  iteration_statement
 |  jump_statement
+|  compound_statement
+;
+
+compound_statement:
+    '{' '}' { $$ = create_compound_statement_node(NULL); }
+|   '{' statement_list '}' { $$ = create_compound_statement_node($2); }
 ;
 
 jump_statement:

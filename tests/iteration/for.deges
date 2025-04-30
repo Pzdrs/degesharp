@@ -3,3 +3,7 @@ loop (;;i++);
 loop (; i < 10;) ;
 loop (; True; ) vypadny;
 loop (i = 0; i < 10;) i++;
+
+loop (;;) {
+    skip;
+}

@@ -12,7 +12,7 @@ lexer: clean
 parser: clean
 	bison -d ds.y -Wcounterexamples
 	flex ds.l
-	@$(CC) lex.yy.c ds.tab.c inc/debug.c inc/ast/ast.c -lm
+	@$(CC) lex.yy.c ds.tab.c inc/debug.c inc/ast/ast.c inc/ast/ast_eval.c -lm
 
 test: parser
 	@for file in tests/*; do \

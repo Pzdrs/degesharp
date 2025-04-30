@@ -1,6 +1,30 @@
 #include <stdio.h>
 #include "ast.h"
 
+char *node_type_name(NodeType type) {
+    switch (type) {
+        case NODE_STATEMENT_LIST: return "statement list";
+        case NODE_COMPOUND_STATEMENT: return "compound statement";
+        case NODE_BINARY_OP: return "binary operation";
+        case NODE_UNARY_OP: return "unary operation";
+        case NODE_DECLARATION: return "declaration";
+        case NODE_ASSIGNMENT: return "assignment";
+        case NODE_EQUALITY_OP: return "equality operation";
+        case NODE_RELATION_OP: return "relation operation";
+        case NODE_TERNARY_OP: return "ternary operation";
+        case NODE_CONDITION: return "condition";
+        case NODE_FOR: return "for loop";
+        case NODE_RETURN: return "return statement";
+        case NODE_BREAK: return "break statement";
+        case NODE_CONTINUE: return "continue statement";
+        case NODE_NUMBER: return "number literal";
+        case NODE_STRING: return "string literal";
+        case NODE_BOOLEAN: return "boolean literal";
+        case NODE_VARIABLE: return "variable reference";
+        default: return "unknown node type";
+    }
+}
+
 char *binary_op_name(BinaryOpType op) {
     switch (op) {
         case OP_ADD: return "addition";
@@ -337,11 +361,4 @@ ASTNode *create_compound_statement_node(ASTNode *statement_list) {
     ASTNode *node = create_node(NODE_COMPOUND_STATEMENT);
     node->meta.compound_statement.statement_list = statement_list;
     return node;
-}    
-
-void interpret(ASTNode *root) {
-    printf("\nInterpreting the AST\n");
-    if (root == NULL) {
-        return;
-    }
 }    

@@ -149,9 +149,14 @@ struct ASTNode {
     } meta;
 };
 
-void print_ast(ASTNode *node, int indent);
+char *node_type_name(NodeType type);
+char *binary_op_name(BinaryOpType op);
+char *unary_op_name(UnaryOpType op);
+char *relation_op_name(RelationOpType op);
+char *equality_op_name(EqualityOpType op);
+char *variable_type_name(VariableType type);
 
-void interpret(ASTNode *node);
+void print_ast(ASTNode *node, int indent);
 
 ASTNode *create_node(NodeType type);
 

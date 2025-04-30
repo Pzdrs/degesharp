@@ -1,17 +1,17 @@
-jakoby x = 5;
-jakoby y = x*10;
+jakoby x : int = 5;
+jakoby y : int = x * 10;
 
-cokdyz (y > x) {
+cokdyz (5 < 10) {
     dyghej("Y je vetsi nez X");
-} takjinak(y je x) {
+} jinak cokdyz (y je x) {
     dyghej("Y je stejny jak X");
 } jinak {
     dyghej("jsme cooked");
 }
 
-jakoby testik = x > y a nene x je 10;
-dyghej(testik);
+jakoby testik : bool = x > y a nene x je 10;
 
-loop (jakoby i = 0; i < 10; i = i + 1) {
-    dyghej("Current i: " + i);
+jakoby i : int = 0;
+loop (; i < 10; i = i + 1) {
+    
 }

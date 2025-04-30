@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include "inc/ast/ast.h"
+#include "inc/ast/ast_eval.h"
 
 // Jako funguje to i bez toho ale hazi to warning
 extern int yylex();
@@ -81,6 +82,7 @@ ASTNode *root = NULL;
     <var_type> type_specifier
     <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement jump_statement compound_statement
 
+// After parsing IF, its expression and the statement, there might be an ELSE statement - so instruct the algorithm to shift and wait instead of a premature reduce
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 %%
@@ -90,9 +92,9 @@ degesharp:
     {
         root = $1;
         printf("Parsed successfully!\n\n\nAST\n----------------------------------\n");
-        printf("ROOT NODE\n");
-        print_ast(root, 1);
+        print_ast(root, 0);
 
+        // After parsing, move to semantic analysis and interpretation
         interpret(root);
     }
 ;

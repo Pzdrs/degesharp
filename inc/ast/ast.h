@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include "types.h"
 
 typedef enum {
     NODE_DECLARATION,
@@ -58,12 +59,6 @@ typedef enum {
     OP_EQ,
     OP_NE,
 } EqualityOpType;
-
-typedef enum {
-    T_INT,
-    T_STRING,
-    T_BOOL,
-} VariableType;
 
 typedef struct ASTNode ASTNode;
 

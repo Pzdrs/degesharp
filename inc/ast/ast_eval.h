@@ -2,12 +2,7 @@
 #define AST_EVAL_H
 
 #include "ast.h"
-
-typedef union Value {
-    int integer;
-    char *string;
-    bool boolean;
-} Value;
+#include "types.h"
 
 void interpret(ASTNode *node);
 void eval_statement(ASTNode *node);

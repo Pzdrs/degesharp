@@ -1,15 +1,15 @@
 jakoby x : int = 5;
 jakoby y : int = x * 10;
 
-cokdyz (5 < 10) {
+cokdyz ("" je "") {
     dyghej("Y je vetsi nez X");
-} jinak cokdyz (y je x) {
+} jinak cokdyz (true) {
     dyghej("Y je stejny jak X");
 } jinak {
     dyghej("jsme cooked");
 }
 
-jakoby testik : bool = x > y a nene x je 10;
+jakoby testik : bool = x > y nebo y je x*10;
 
 jakoby i : int = 0;
 loop (; i < 10; i = i + 1) {

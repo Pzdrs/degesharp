@@ -375,6 +375,8 @@ atom:
 void yyerror(const char *str) {
     fflush(stdout);
 	printf("\n%*s\n%*s\n", 0, "^", 0, str);
+
+    exit(1);
 }
 
 int main(int argc, char **argv) {

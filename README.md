@@ -31,7 +31,7 @@ make build
 3. Compile the source file
 
 ```bash
-./degesharp <source_file>.deges
+./degesharp -f <source_file>.deges
 ```
 
 There are three verbosity flags:

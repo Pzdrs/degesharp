@@ -27,6 +27,26 @@ bool is_lvalue(ASTNode *node) {
     return false;
 }
 
+Value default_value_for_type(VariableType type) {
+    Value v;
+    v.type = type;
+    switch (type) {
+        case T_INT:
+            v.value.integer = 0;
+            break;
+        case T_STRING:
+            v.value.string = "";
+            break;
+        case T_BOOL:
+            v.value.boolean = false;
+            break;
+        default:
+            yyerror("Unknown variable type");
+            break;
+    }
+    return v;
+}
+
 Value eval_expression(ASTNode *node) {
     switch (node->type) {
         case NODE_RELATION_OP: {
@@ -191,7 +211,7 @@ Value eval_expression(ASTNode *node) {
 
             if (entry->data.variable.value.type != val.type) {
                 yyerror("type mismatch: variable type and assigned type do not match");
-                return;
+                return result;
             }
 
             entry->data.variable.value = val;
@@ -243,26 +263,29 @@ void eval_statement(ASTNode *node) {
     printf("\nEvaluating node: %s\n", node_type_name(node->type)); 
     switch (node->type) {
         case NODE_DECLARATION: {
-            if (node->meta.declaration.init != NULL) {
-                Value val = eval_expression(node->meta.declaration.init);
-                VariableType val_type = val.type;
-                printf("Name, type: %s, %s\n", 
-                    node->meta.declaration.name,
-                    variable_type_name(node->meta.declaration.type)
-                );
+            const char *name = node->meta.declaration.name;
+            VariableType declared_type = node->meta.declaration.type;
+            ASTNode *init_expr = node->meta.declaration.init;
 
-                SymbolTableEntry *entry = lookup_symbol(symbol_table, node->meta.declaration.name);
-                if (entry == NULL) {
-                    if (node->meta.declaration.type != val_type) {
-                        yyerror("type mismatch: declaration type and assigned type do not match");
-                        return;
-                    }
-                    add_symbol(symbol_table, node->meta.declaration.name, VARIABLE, val);
-                } else {
-                    yyerror("Variable already declared");
-                }           
+            printf("Name, type: %s, %s\n", name, variable_type_name(declared_type));
+
+            SymbolTableEntry *entry = lookup_symbol(symbol_table, name);
+            if (entry != NULL) {
+                yyerror("Variable already declared");
+                return;
+            }
+
+            if (init_expr != NULL) {
+                Value val = eval_expression(init_expr);
+                if (val.type != declared_type) {
+                    yyerror("Type mismatch: declaration type and assigned type do not match");
+                    return;
+                }
+                add_symbol(symbol_table, name, VARIABLE, val);
             } else {
-                
+                // No initializer: add default value or mark as uninitialized
+                Value default_val = default_value_for_type(declared_type); // You must define this
+                add_symbol(symbol_table, name, VARIABLE, default_val);
             }
             break;
         }
@@ -313,8 +336,10 @@ void eval_statement(ASTNode *node) {
             }
             
             while(eval_expression(node->meta.iteration.for_loop.cond).value.boolean) {
+                printf("For loop body\n");
                 eval_statement(node->meta.iteration.for_loop.body);
-                eval_expression(node->meta.iteration.for_loop.iter);
+                
+                if (node->meta.iteration.for_loop.iter != NULL) eval_expression(node->meta.iteration.for_loop.iter);
             }
             break;
         }

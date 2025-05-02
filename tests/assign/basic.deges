@@ -1,5 +1,5 @@
 jakoby x : int = 0;
-jakoby y : int = 100;
+jakoby y : int;
 
 x=10;
 x=20;

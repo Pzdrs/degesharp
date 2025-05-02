@@ -414,28 +414,34 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[i], "--veval") == 0) {
             printf("Verbose AST evaluation enabled\n");
             verbose_ast_eval = 1;
-        } else if (!source_file) {
-            source_file = argv[i];
+        } else if (strcmp(argv[i], "-f") == 0) {
+            if (i + 1 < argc) {
+                source_file = argv[++i];  // move to next arg (the filename)
+            } else {
+                fprintf(stderr, "Error: -f flag requires a file path\n");
+                return 1;
+            }
         } else {
-            fprintf(stderr, "Usage: %s [--vflex] [--vast] [--veval] [-f source_file]\n", argv[0]);
+            fprintf(stderr, "Usage: %s [--vflex] [--vast] [--veval] -f source_file\n", argv[0]);
             return 1;
         }
     }
 
-    if (source_file) {
-        FILE *file = fopen(source_file, "r");
-        if (!file) {
-            perror("Error opening the file");
-            return 1;
-        }
-        yyin = file;
+    if (!source_file) {
+        fprintf(stderr, "Error: input file must be specified using -f\n");
+        return 1;
     }
+
+    FILE *file = fopen(source_file, "r");
+    if (!file) {
+        perror("Error opening the file");
+        return 1;
+    }
+    yyin = file;
 
     int result = yyparse();
 
-    if (yyin != stdin) {
-        fclose(yyin);
-    }
+    fclose(yyin);
 
     return result;
 }

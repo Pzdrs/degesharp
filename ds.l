@@ -109,7 +109,7 @@ false                               { _("FALSE_LITERAL"); yylval.bool_val = 0; r
 "/"                                 { _("SLASH");           return '/'; }
 "?"                                 { _("QUESTION_MARK");   return '?'; }
 
-\n                                  { /* ignore newlines */ }
+\n                                  { if (verbose_flex) printf("%s", yytext); }
 .                                   {}
 %%
 

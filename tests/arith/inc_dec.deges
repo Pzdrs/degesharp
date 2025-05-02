@@ -1,3 +1,4 @@
+jakoby x: int;
 x++;
 x--;
 

@@ -103,6 +103,10 @@ void print_ast(ASTNode *node, int indent) {
             print_ast(node->meta.binary_op.left, indent + 1);
             print_ast(node->meta.binary_op.right, indent + 1);
             break;
+        case NODE_UNARY_OP:
+            printf("Unary operation node (%s)\n", unary_op_name(node->meta.unary_op.op));
+            print_ast(node->meta.unary_op.operand, indent + 1);
+            break;
         case NODE_DECLARATION:
             printf("Declaration node (var_name: %s, type: %s)\n", node->meta.declaration.name, variable_type_name(node->meta.declaration.type));
             print_ast(node->meta.declaration.init, indent + 1);

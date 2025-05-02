@@ -6,6 +6,8 @@
 extern void yyerror(const char *s);
 extern bool verbose_ast_eval;
 
+bool should_break, should_continue;
+
 SymbolTable *symbol_table = NULL;
 
 void interpret(ASTNode *root) {
@@ -195,6 +197,37 @@ Value eval_expression(ASTNode *node) {
             
             return result;
         }
+        case NODE_UNARY_OP: {
+            if (verbose_ast_eval) printf("Evaluating unary operation\n");
+
+            Value result;
+
+            Value operand_val = eval_expression(node->meta.unary_op.operand);
+            VariableType operand_type = operand_val.type;
+
+            if (operand_type == T_INT) {
+                result.type = T_INT;
+                switch (node->meta.unary_op.op) {
+                    case OP_UNARY_MINUS:
+                        result.value.integer = -operand_val.value.integer;
+                        break;
+                    default:
+                        yyerror("invalid unary operator");
+                }
+            
+            } else if (operand_type == T_BOOL) {
+                result.type = T_BOOL;
+                switch (node->meta.unary_op.op) {
+                    case OP_LOGICAL_NOT:
+                        result.value.boolean = !operand_val.value.boolean;
+                        break;
+                    default:
+                        yyerror("invalid unary operator");
+                }
+            } else yyerror("invalid unary operation: operand must be a number");
+            
+            return result;
+        }
         case NODE_VARIABLE: {
             if (verbose_ast_eval) printf("Evaluating variable\n");
             SymbolTableEntry *entry = lookup_symbol(symbol_table, node->meta.variable.name);
@@ -221,7 +254,6 @@ Value eval_expression(ASTNode *node) {
             }
 
             Value val = eval_expression(node->meta.assignment.value);
-
             if (entry->data.variable.value.type != val.type) {
                 yyerror("type mismatch: variable type and assigned type do not match");
                 return result;
@@ -243,6 +275,20 @@ Value eval_expression(ASTNode *node) {
             if (verbose_ast_eval) print_st(symbol_table);
             return result;
         }
+        case NODE_TERNARY_OP:
+            if (verbose_ast_eval) printf("Evaluating conditional expression\n");
+
+            Value cond = eval_expression(node->meta.condition.cond);
+            if (cond.type != T_BOOL) {
+                yyerror("condition must be a boolean");
+                return (Value){ .type = T_BOOL, .value.boolean = false };
+            }
+
+            if (cond.value.boolean) {
+                return eval_expression(node->meta.condition.then_case);
+            } else {
+                return eval_expression(node->meta.condition.else_case);
+            }
         case NODE_NUMBER:
             return (Value){
                 .type = T_INT,
@@ -348,12 +394,32 @@ void eval_statement(ASTNode *node) {
                 eval_statement(init);
             }
             
-            while(eval_expression(node->meta.iteration.for_loop.cond).value.boolean) {
+            while(node->meta.iteration.for_loop.cond != NULL ? 
+                eval_expression(node->meta.iteration.for_loop.cond).value.boolean : true
+            ) {
                 if (verbose_ast_eval) printf("For loop body\n");
                 eval_statement(node->meta.iteration.for_loop.body);
+                if (should_break) {
+                    should_break = false;
+                    break;
+                }
+                if (should_continue) {
+                    should_continue = false;
+                    continue;
+                }
                 
                 if (node->meta.iteration.for_loop.iter != NULL) eval_expression(node->meta.iteration.for_loop.iter);
             }
+            break;
+        }
+        case NODE_BREAK: {
+            if (verbose_ast_eval) printf("Break statement\n");
+            should_break = true;
+            break;
+        }
+        case NODE_CONTINUE: {
+            if (verbose_ast_eval) printf("Continue statement\n");
+            should_continue = true;
             break;
         }
         case NODE_FUNCTION_CALL: {

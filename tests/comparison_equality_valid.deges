@@ -12,5 +12,5 @@ trueVal = 1 neni 2;
 falseVal = 1 je 2;
 falseVal = 1 neni 1;
 
-trueVal = nene 1 je 2;
+trueVal = nene (1 je 2);
 

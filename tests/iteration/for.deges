@@ -1,9 +1,13 @@
-loop (;;) ;
-loop (;;i++);
-loop (; i < 10;) ;
-loop (; True; ) vypadny;
+// Infinite loops work, but are commented for obvious reasons
+//loop (;;) ;
+
+jakoby i: int;
+
+//loop (;;i++);
+//loop (; i < 10;) ;
+loop (; true; ) vypadny;
 loop (i = 0; i < 10;) i++;
 
-loop (;;) {
+/* loop (;;) {
     skip;
-}
+} */

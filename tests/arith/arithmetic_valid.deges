@@ -1,8 +1,9 @@
+jakoby kokot: int;
 kokot = 0x11;
 kokot = 1;
 kokot = 9 * 5 +1;
 kokot = ((((1+5)+3)+5)*2);
-kokot = 1/0;
+//kokot = 1/0;
 
 kokot = -kokot;
 kokot = +kokot;
@@ -14,4 +15,3 @@ kokot++;
 kokot--;
 ++kokot;
 --kokot;
-10++;

@@ -73,8 +73,6 @@ nene                                { _("NOT");             return NOT_OP; }
 true                                { _("TRUE_LITERAL"); yylval.bool_val = 1; return TRUE_LITERAL; }
 false                               { _("FALSE_LITERAL"); yylval.bool_val = 0; return FALSE_LITERAL; }
 
-povidam                             { _("PRINT");           return PRINT; }
-
 {L}({L}|{D})*		                { return check_type(); }
 
 ([1-9][0-9_]*|0)                    { _("CONSTANT_INT"); yylval.num_val = atoi(yytext); return CONSTANT;}

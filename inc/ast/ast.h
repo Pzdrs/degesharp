@@ -9,6 +9,7 @@ typedef enum {
     NODE_DECLARATION,
     NODE_STATEMENT_LIST,
     NODE_COMPOUND_STATEMENT,
+    NODE_FUNCTION_CALL,
 
     // Atoms
     NODE_VARIABLE,
@@ -141,6 +142,10 @@ struct ASTNode {
         struct {
             struct ASTNode *statement_list;
         } compound_statement;
+        struct {
+            char *name;
+            ASTNode *arg;
+        } function_call;
     } meta;
 };
 
@@ -180,4 +185,5 @@ ASTNode *create_break_node();
 ASTNode *create_continue_node();
 
 ASTNode *create_compound_statement_node(ASTNode *statement_list);
+ASTNode *create_function_call_node(char* name, ASTNode *arg);
 #endif // AST_H

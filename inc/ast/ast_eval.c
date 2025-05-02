@@ -352,6 +352,29 @@ void eval_statement(ASTNode *node) {
             }
             break;
         }
+        case NODE_FUNCTION_CALL: {
+            char* name = node->meta.function_call.name;
+            printf("Function call: %s\n", name);
+            if (strcmp(name, "povidam") == 0) {
+                Value arg = eval_expression(node->meta.function_call.arg);
+                switch (arg.type) {
+                    case T_INT:
+                        printf("%d\n", arg.value.integer);
+                        break;
+                    case T_STRING:
+                        printf("%s\n", arg.value.string);
+                        break;
+                    case T_BOOL:
+                        printf("%s\n", arg.value.boolean ? "true" : "false");
+                        break;
+                    default:
+                        yyerror("Invalid argument type for print function");
+                }
+            } else {
+                yyerror("Unknown function call");
+            }
+            break;
+        }
         default:
             printf("Unknown statement type: %d\n", node->type);
             break;

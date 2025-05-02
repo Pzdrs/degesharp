@@ -2,11 +2,11 @@ jakoby x : int = 5;
 jakoby y : int = x * 10;
 
 cokdyz ("" je "") {
-    dyghej("Y je vetsi nez X");
+    povidam("Y je vetsi nez X");
 } jinak cokdyz (true) {
-    dyghej("Y je stejny jak X");
+    povidam("Y je stejny jak X");
 } jinak {
-    dyghej("jsme cooked");
+    povidam("jsme cooked");
 }
 
 jakoby testik : bool = x > y nebo y je x*10;

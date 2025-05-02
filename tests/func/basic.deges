@@ -1,0 +1,5 @@
+povidam("ahoj\n\n\n");
+//nepovidam("ahoj");
+
+povidam(10);
+povidam(10 > 220);

@@ -21,6 +21,7 @@ char *node_type_name(NodeType type) {
         case NODE_STRING: return "string literal";
         case NODE_BOOLEAN: return "boolean literal";
         case NODE_VARIABLE: return "variable reference";
+        case NODE_FUNCTION_CALL: return "function call";
         default: return "unknown node type";
     }
 }
@@ -173,6 +174,12 @@ void print_ast(ASTNode *node, int indent) {
             pad(indent + 1);
             printf(node->meta.iteration.for_loop.body ? "Body:\n" : "No body\n");
             print_ast(node->meta.iteration.for_loop.body, indent + 2);
+            break;
+        case NODE_FUNCTION_CALL:
+            printf("Function call node (name: %s)\n", node->meta.function_call.name);
+            pad(indent + 1);
+            printf(node->meta.function_call.arg ? "Argument:\n" : "No argument\n");
+            print_ast(node->meta.function_call.arg, indent + 2);
             break;
         case NODE_RETURN:
             printf("Return node\n");
@@ -362,3 +369,11 @@ ASTNode *create_compound_statement_node(ASTNode *statement_list) {
     node->meta.compound_statement.statement_list = statement_list;
     return node;
 }    
+
+ASTNode *create_function_call_node(char *name, ASTNode *arg) {
+    printf("\nCreating a function call node\n");
+    ASTNode *node = create_node(NODE_FUNCTION_CALL);
+    node->meta.function_call.name = name;
+    node->meta.function_call.arg = arg;
+    return node;
+}

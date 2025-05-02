@@ -57,7 +57,6 @@ ASTNode *root = NULL;
     CONTINUE    "skip"
     RETURN      "tadymas"
     DECLARE     "jakoby"
-    PRINT       "povidam"
     TYPE_STRING "str"
     TYPE_INT    "int"
     TYPE_BOOL   "bool"
@@ -81,7 +80,7 @@ ASTNode *root = NULL;
 %type 
     <assign_op> assignment_operator
     <var_type> type_specifier
-    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement jump_statement compound_statement
+    <node> degesharp statement statement_list declaration atom expression postfix_expression unary_expression expression_statement assignment_expression multiplicative_expression additive_expression equality_expression relational_expression logical_and_expression logical_or_expression conditional_expression selection_statement iteration_statement jump_statement compound_statement function_call
 
 // After parsing IF, its expression and the statement, there might be an ELSE statement - so instruct the algorithm to shift and wait instead of a premature reduce
 %nonassoc LOWER_THAN_ELSE
@@ -141,6 +140,15 @@ statement:
 |  iteration_statement
 |  jump_statement
 |  compound_statement
+|  function_call
+;
+
+function_call:
+    IDENTIFIER '(' expression ')' ';'
+    {
+        $$ = create_function_call_node($1, $expression
+        );
+    }
 ;
 
 compound_statement:

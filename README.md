@@ -62,6 +62,13 @@ x * y;
 x / y;
 ```
 
+### String operations
+
+```
+# Concatenation
+"Hello " + "world"; // "Hello world"
+```
+
 ### Logical operations
 
 ```
@@ -107,3 +114,9 @@ loop (;;) {
     // do something
 }
 ```
+
+## Things to keep in mind
+
+- As mentioned, C89 standard is used for the `for` loop, so the initialization section doesn't support variable declarations.
+- The language doesn't support floating point numbers, so the `float` and `double` types are not available.
+- The internal symbol table doesn't support scoping, so all variables are global. This means that you cannot have the same variable name in different functions or blocks.

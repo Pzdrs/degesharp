@@ -1,22 +1,28 @@
-cokdyz (True);
-cokdyz (False);
+cokdyz (true);
+cokdyz (false);
 
-cokdyz (True) 0;
+cokdyz (0) ;
+cokdyz (1) ;
 
-cokdyz (True) 0; jinak 1;
-cokdyz (True) x=1; jinak jakoby marcel : str = "vibe coder";
+cokdyz ("asd") ;
+cokdyz ("") ;
 
-cokdyz (True) cokdyz(True) ; jinak ;
-cokdyz (True) cokdyz (True) ; jinak ; jinak ;
+cokdyz (true) 0;
 
-cokdyz (True) {
+cokdyz (true) 0; jinak 1;
+cokdyz (false) x=1; jinak jakoby marcel : str = "vibe coder";
+
+cokdyz (true) cokdyz(true) ; jinak ;
+cokdyz (true) cokdyz (true) ; jinak ; jinak ;
+
+cokdyz (true) {
 
 }
-cokdyz (True) {
+cokdyz (true) {
     0;
 }
 
-cokdyz (True) {
+cokdyz (true) {
     0;
 } jinak {
     x=10;

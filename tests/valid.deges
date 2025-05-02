@@ -10,7 +10,7 @@ cokdyz ("" je "") {
 }
 
 jakoby testik : bool = x > y nebo y je x*10;
-
+testik = 10;
 jakoby i : int = 0;
 loop (; i < 10; i = i + 1) {
     

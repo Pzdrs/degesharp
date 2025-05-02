@@ -19,6 +19,14 @@ void interpret(ASTNode *root) {
     eval_statement(root);
 }
 
+bool is_lvalue(ASTNode *node) {
+    if (node == NULL) return false;
+    if (node->type == NODE_VARIABLE) {
+        return true;
+    }
+    return false;
+}
+
 Value eval_expression(ASTNode *node) {
     switch (node->type) {
         case NODE_RELATION_OP: {
@@ -139,7 +147,7 @@ Value eval_expression(ASTNode *node) {
                 }
             } else if (left_type == T_BOOL && right_type == T_BOOL) {
                 result.type = T_BOOL;
-                
+
                 switch (node->meta.binary_op.op) {
                     case OP_LOGICAL_AND:
                         result.value.integer = left_val.value.boolean && right_val.value.boolean;
@@ -158,12 +166,49 @@ Value eval_expression(ASTNode *node) {
             printf("Evaluating variable\n");
             SymbolTableEntry *entry = lookup_symbol(symbol_table, node->meta.variable.name);
 
-            printf("Value: %d\n", entry->data.variable.value.value.integer);
             if (entry != NULL) {
                 return entry->data.variable.value;
             } else yyerror("Variable not found");
             
             break;
+        }
+        case NODE_ASSIGNMENT: {
+            Value result;
+
+            if(!is_lvalue(node->meta.assignment.var)) {
+                yyerror("lvalue required as left operand of assignment");
+                return result;
+            }
+
+            SymbolTableEntry *entry = lookup_symbol(symbol_table, node->meta.assignment.var->meta.variable.name);
+
+            if (entry == NULL) {
+                yyerror("Variable not found");
+                return result;
+            }
+
+            Value val = eval_expression(node->meta.assignment.value);
+
+            if (entry->data.variable.value.type != val.type) {
+                yyerror("type mismatch: variable type and assigned type do not match");
+                return;
+            }
+
+            entry->data.variable.value = val;
+            result.type = entry->data.variable.value.type;
+            switch (result.type) {
+                case T_INT:
+                    result.value.integer = entry->data.variable.value.value.integer;
+                    break;
+                case T_STRING:
+                    result.value.string = entry->data.variable.value.value.string;
+                    break;
+                case T_BOOL:
+                    result.value.boolean = entry->data.variable.value.value.boolean;
+                    break;
+            }
+            print_st(symbol_table);
+            return result;
         }
         case NODE_NUMBER:
             return (Value){
@@ -222,37 +267,37 @@ void eval_statement(ASTNode *node) {
             break;
         }
         case NODE_ASSIGNMENT: {
-            // tady to bude imo chtit predelat AST assignment
-            Value val = eval_expression(node->meta.assignment.value);
-            // Check if var exists, if not, throw an error
-            // Then verify the type and assign the value if possible
-            //yyerror("var not found");
+            eval_expression(node);
             break;
         }
         case NODE_CONDITION: {
             Value cond = eval_expression(node->meta.condition.cond);
-            
-            // we have to be able to accept bool, int and string
 
             switch (cond.type) {
                 case T_BOOL:
                     if (cond.value.boolean) {
+                        printf("Condition is true\n");
                         eval_statement(node->meta.condition.then_case);
                     } else {
+                        printf("Condition is false\n");
                         eval_statement(node->meta.condition.else_case);
                     }
                     break;
                 case T_INT:
                     if (cond.value.integer) {
+                        printf("Condition is true\n");
                         eval_statement(node->meta.condition.then_case);
                     } else {
+                        printf("Condition is false\n");
                         eval_statement(node->meta.condition.else_case);
                     }
                     break;
                 case T_STRING:
                     if (strcmp(cond.value.string, "") != 0) {
+                        printf("Condition is true\n");
                         eval_statement(node->meta.condition.then_case);
                     } else {
+                        printf("Condition is false\n");
                         eval_statement(node->meta.condition.else_case);
                     }
                     break;
@@ -267,7 +312,6 @@ void eval_statement(ASTNode *node) {
                 eval_statement(init);
             }
             
-            break; // Variables aren't implemented yet, this would possibly result in an infinite loop
             while(eval_expression(node->meta.iteration.for_loop.cond).value.boolean) {
                 eval_statement(node->meta.iteration.for_loop.body);
                 eval_expression(node->meta.iteration.for_loop.iter);

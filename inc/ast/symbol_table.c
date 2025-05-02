@@ -68,7 +68,6 @@ void print_st(SymbolTable *table) {
 
 SymbolTableEntry *lookup_symbol(SymbolTable *table, const char *name) {
     printf("Looking up symbol: %s\n", name);
-    print_st(table);
     for (size_t i = 0; i < table->size; i++) {
         if (strcmp(table->entries[i].name, name) == 0) {
             SymbolTableEntry *entry = & table->entries[i];

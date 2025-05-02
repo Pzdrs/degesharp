@@ -74,6 +74,7 @@ x / y;
 No support for user functions, but you can use the built-in functions.
 
 - `povidam(arg)` - prints the argument to the console (accepts `int`, `bool`, `string`)
+- `print_st()` - prints the symbol table for debugging purposes
 
 ### Logical operations
 

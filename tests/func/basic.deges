@@ -3,3 +3,5 @@ povidam("ahoj\n\n\n");
 
 povidam(10);
 povidam(10 > 220);
+
+print_st();

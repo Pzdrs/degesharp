@@ -370,6 +370,9 @@ void eval_statement(ASTNode *node) {
                     default:
                         yyerror("Invalid argument type for print function");
                 }
+
+            } else if (strcmp(name, "print_st") == 0) {
+                print_st(symbol_table);
             } else {
                 yyerror("Unknown function call");
             }

@@ -144,10 +144,13 @@ statement:
 ;
 
 function_call:
-    IDENTIFIER '(' expression ')' ';'
+    IDENTIFIER '(' ')' ';'
     {
-        $$ = create_function_call_node($1, $expression
-        );
+        $$ = create_function_call_node($1, NULL);
+    }
+|   IDENTIFIER '(' expression ')' ';'
+    {
+        $$ = create_function_call_node($1, $expression);
     }
 ;
 
@@ -385,7 +388,7 @@ void yyerror(const char *str) {
     fflush(stdout);
 	printf("\n%*s\n%*s\n", 0, "^", 0, str);
 
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 int main(int argc, char **argv) {

@@ -1,0 +1,8 @@
+jakoby x : int;
+jakoby y : int;
+jakoby z : int;
+
+// Arithmetic operations
+x = 5 + 3;
+y = x - 2;
+z = x * y;

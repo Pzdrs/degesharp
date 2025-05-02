@@ -15,3 +15,7 @@ jakoby i : int = 0;
 loop (; i < 10;i++) {
     
 }
+
+jakoby string : str = "ahoj";
+
+string = string + "ahoj";

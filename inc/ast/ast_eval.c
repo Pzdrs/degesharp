@@ -178,6 +178,15 @@ Value eval_expression(ASTNode *node) {
                     default:
                         yyerror("invalid binary operator");
                 }
+            } else if (left_type == T_STRING && right_type == T_STRING) {
+                if (node->meta.binary_op.op == OP_ADD) {
+                    result.type = T_STRING;
+                    result.value.string = malloc(strlen(left_val.value.string) + strlen(right_val.value.string) + 1);
+                    strcpy(result.value.string, left_val.value.string);
+                    strcat(result.value.string, right_val.value.string);
+                } else {
+                    yyerror("invalid binary operator for strings");
+                }
             } else yyerror("invalid binary operation: invalid operand combination");            
             
             return result;

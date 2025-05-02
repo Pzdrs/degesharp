@@ -57,6 +57,7 @@ ASTNode *root = NULL;
     CONTINUE    "skip"
     RETURN      "tadymas"
     DECLARE     "jakoby"
+    PRINT       "povidam"
     TYPE_STRING "str"
     TYPE_INT    "int"
     TYPE_BOOL   "bool"

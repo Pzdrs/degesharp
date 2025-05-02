@@ -1,0 +1,6 @@
+jakoby i : int;
+jakoby n : int = 4;
+jakoby factorial : int = 1;
+loop (i = 1; i <= n; i++) {
+    factorial = factorial * i;
+}

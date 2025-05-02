@@ -1,0 +1,5 @@
+jakoby sum : int = 0;
+jakoby i : int;
+loop (i = 1; i <= 5; i++) {
+    sum = sum + i;
+}

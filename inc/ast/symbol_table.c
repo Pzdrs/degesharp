@@ -4,6 +4,8 @@
 
 #define INITIAL_SIZE 10
 
+extern bool verbose_ast_eval;
+
 char  *entry_type_name(EntryType type) {
     switch (type) {
         case FUNCTION: return "Func";
@@ -67,7 +69,7 @@ void print_st(SymbolTable *table) {
 }
 
 SymbolTableEntry *lookup_symbol(SymbolTable *table, const char *name) {
-    printf("Looking up symbol: %s\n", name);
+    if (verbose_ast_eval) printf("Looking up symbol: %s\n", name);
     for (size_t i = 0; i < table->size; i++) {
         if (strcmp(table->entries[i].name, name) == 0) {
             SymbolTableEntry *entry = & table->entries[i];
@@ -78,7 +80,7 @@ SymbolTableEntry *lookup_symbol(SymbolTable *table, const char *name) {
 }
 
 void add_symbol(SymbolTable *table, const char *name, EntryType type, Value value) {
-    printf("Adding symbol: %s, type: %s\n", name, variable_type_name(value.type));
+    if (verbose_ast_eval) printf("Adding symbol: %s, type: %s\n", name, variable_type_name(value.type));
     table->entries = realloc(table->entries, sizeof(SymbolTableEntry) * (table->size + 1));
     if (table->entries == NULL) {
         fprintf(stderr, "Failed to allocate memory for symbol table entry\n");
@@ -91,5 +93,5 @@ void add_symbol(SymbolTable *table, const char *name, EntryType type, Value valu
     entry->data.variable.value = value;
     table->size++;
 
-    print_st(table);
+    if (verbose_ast_eval) print_st(table);
 }

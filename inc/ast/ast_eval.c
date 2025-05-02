@@ -4,12 +4,16 @@
 #include "symbol_table.h"
 
 extern void yyerror(const char *s);
+extern bool verbose_ast_eval;
 
 SymbolTable *symbol_table = NULL;
 
 void interpret(ASTNode *root) {
-    printf("\nInterpreting the AST\n");
-    printf("--------------------------------\n");
+    if (verbose_ast_eval) {
+        printf("\n--------------------------------");
+        printf("\nInterpreting the AST\n");
+        printf("--------------------------------");
+    }
     if (root == NULL) {
         return;
     }
@@ -50,7 +54,7 @@ Value default_value_for_type(VariableType type) {
 Value eval_expression(ASTNode *node) {
     switch (node->type) {
         case NODE_RELATION_OP: {
-            printf("Evaluating relation operation\n"); 
+            if (verbose_ast_eval) printf("Evaluating relation operation\n"); 
 
             Value result;
             result.type = T_BOOL;
@@ -77,11 +81,11 @@ Value eval_expression(ASTNode *node) {
                 }
             } else yyerror("invalid relation operation: both operands must be numbers");
             
-            printf("Result: %d\n", result.value.boolean);
+            if (verbose_ast_eval) printf("Result: %d\n", result.value.boolean);
             return result;
         }
         case NODE_EQUALITY_OP: {
-            printf("Evaluating equality operation\n");
+            if (verbose_ast_eval) printf("Evaluating equality operation\n");
 
             Value result;
             result.type = T_BOOL;
@@ -92,7 +96,7 @@ Value eval_expression(ASTNode *node) {
             VariableType right_type = right_val.type;
 
             if (left_type == T_INT && right_type == T_INT) {
-                printf("Comparing numbers\n");
+                if (verbose_ast_eval) printf("Comparing numbers\n");
                 switch (node->meta.equality.op) {
                     case OP_EQ:
                         result.value.boolean = left_val.value.integer == right_val.value.integer;
@@ -103,7 +107,7 @@ Value eval_expression(ASTNode *node) {
                 }
             }
             else if (left_type == T_STRING && right_type == T_STRING) {
-                printf("Comparing strings\n");
+                if (verbose_ast_eval) printf("Comparing strings\n");
                 switch (node->meta.equality.op) {
                     case OP_EQ:
                         result.value.boolean = strcmp(left_val.value.string, right_val.value.string) == 0;
@@ -114,7 +118,7 @@ Value eval_expression(ASTNode *node) {
                 }
             }
             else if (left_type == T_BOOL && right_type == T_BOOL) {
-                printf("Comparing booleans\n");
+                if (verbose_ast_eval) printf("Comparing booleans\n");
                 switch (node->meta.equality.op) {
                     case OP_EQ:
                         result.value.boolean = left_val.value.boolean == right_val.value.boolean;
@@ -129,11 +133,11 @@ Value eval_expression(ASTNode *node) {
                 yyerror(buffer);
             } 
             
-            printf("Result: %d\n", result.value.boolean);
+            if (verbose_ast_eval) printf("Result: %d\n", result.value.boolean);
             return result;
         }
         case NODE_BINARY_OP: {
-            printf("Evaluating binary operation\n");
+            if (verbose_ast_eval) printf("Evaluating binary operation\n");
 
             Value result;
 
@@ -192,7 +196,7 @@ Value eval_expression(ASTNode *node) {
             return result;
         }
         case NODE_VARIABLE: {
-            printf("Evaluating variable\n");
+            if (verbose_ast_eval) printf("Evaluating variable\n");
             SymbolTableEntry *entry = lookup_symbol(symbol_table, node->meta.variable.name);
 
             if (entry != NULL) {
@@ -236,7 +240,7 @@ Value eval_expression(ASTNode *node) {
                     result.value.boolean = entry->data.variable.value.value.boolean;
                     break;
             }
-            print_st(symbol_table);
+            if (verbose_ast_eval) print_st(symbol_table);
             return result;
         }
         case NODE_NUMBER:
@@ -269,14 +273,14 @@ void eval_statement(ASTNode *node) {
         return;
     }
 
-    printf("\nEvaluating node: %s\n", node_type_name(node->type)); 
+    if (verbose_ast_eval) printf("\nEvaluating node: %s\n", node_type_name(node->type)); 
     switch (node->type) {
         case NODE_DECLARATION: {
             const char *name = node->meta.declaration.name;
             VariableType declared_type = node->meta.declaration.type;
             ASTNode *init_expr = node->meta.declaration.init;
 
-            printf("Name, type: %s, %s\n", name, variable_type_name(declared_type));
+            if (verbose_ast_eval) printf("Name, type: %s, %s\n", name, variable_type_name(declared_type));
 
             SymbolTableEntry *entry = lookup_symbol(symbol_table, name);
             if (entry != NULL) {
@@ -308,28 +312,28 @@ void eval_statement(ASTNode *node) {
             switch (cond.type) {
                 case T_BOOL:
                     if (cond.value.boolean) {
-                        printf("Condition is true\n");
+                        if (verbose_ast_eval) printf("Condition is true\n");
                         eval_statement(node->meta.condition.then_case);
                     } else {
-                        printf("Condition is false\n");
+                        if (verbose_ast_eval) printf("Condition is false\n");
                         eval_statement(node->meta.condition.else_case);
                     }
                     break;
                 case T_INT:
                     if (cond.value.integer) {
-                        printf("Condition is true\n");
+                        if (verbose_ast_eval) printf("Condition is true\n");
                         eval_statement(node->meta.condition.then_case);
                     } else {
-                        printf("Condition is false\n");
+                        if (verbose_ast_eval) printf("Condition is false\n");
                         eval_statement(node->meta.condition.else_case);
                     }
                     break;
                 case T_STRING:
                     if (strcmp(cond.value.string, "") != 0) {
-                        printf("Condition is true\n");
+                        if (verbose_ast_eval) printf("Condition is true\n");
                         eval_statement(node->meta.condition.then_case);
                     } else {
-                        printf("Condition is false\n");
+                        if (verbose_ast_eval) printf("Condition is false\n");
                         eval_statement(node->meta.condition.else_case);
                     }
                     break;
@@ -345,7 +349,7 @@ void eval_statement(ASTNode *node) {
             }
             
             while(eval_expression(node->meta.iteration.for_loop.cond).value.boolean) {
-                printf("For loop body\n");
+                if (verbose_ast_eval) printf("For loop body\n");
                 eval_statement(node->meta.iteration.for_loop.body);
                 
                 if (node->meta.iteration.for_loop.iter != NULL) eval_expression(node->meta.iteration.for_loop.iter);
@@ -354,18 +358,18 @@ void eval_statement(ASTNode *node) {
         }
         case NODE_FUNCTION_CALL: {
             char* name = node->meta.function_call.name;
-            printf("Function call: %s\n", name);
+            if (verbose_ast_eval) printf("Function call: %s\n", name);
             if (strcmp(name, "povidam") == 0) {
                 Value arg = eval_expression(node->meta.function_call.arg);
                 switch (arg.type) {
                     case T_INT:
-                        printf("%d\n", arg.value.integer);
+                        printf("%d", arg.value.integer);
                         break;
                     case T_STRING:
-                        printf("%s\n", arg.value.string);
+                        printf("%s", arg.value.string);
                         break;
                     case T_BOOL:
-                        printf("%s\n", arg.value.boolean ? "true" : "false");
+                        printf("%s", arg.value.boolean ? "true" : "false");
                         break;
                     default:
                         yyerror("Invalid argument type for print function");
@@ -379,7 +383,7 @@ void eval_statement(ASTNode *node) {
             break;
         }
         default:
-            printf("Unknown statement type: %d\n", node->type);
+            if (verbose_ast_eval) printf("Unknown statement type: %d\n", node->type);
             break;
     }
 }

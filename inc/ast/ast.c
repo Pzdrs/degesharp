@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "ast.h"
 
+
+extern bool verbose_ast_build;
+
 char *node_type_name(NodeType type) {
     switch (type) {
         case NODE_STATEMENT_LIST: return "statement list";
@@ -221,35 +224,35 @@ ASTNode *create_node(NodeType type) {
 }
 
 ASTNode *create_number_node(int value) {
-    printf("\nCreating a number node with value: %d\n", value);
+    if (verbose_ast_build) printf("\nCreating a number node with value: %d\n", value);
     ASTNode *node = create_node(NODE_NUMBER);
     node->meta.number.value = value;
     return node;
 }
 
 ASTNode *create_string_node(char *string) {
-    printf("\nCreating a string node with value: %s\n", string);
+    if (verbose_ast_build) printf("\nCreating a string node with value: %s\n", string);
     ASTNode *node = create_node(NODE_STRING);
     node->meta.string.value = string;
     return node;
 }
 
 ASTNode *create_bool_node(bool boolean) {
-    printf("\nCreating a boolean node with value: %d\n", boolean);
+    if (verbose_ast_build) printf("\nCreating a boolean node with value: %d\n", boolean);
     ASTNode *node = create_node(NODE_BOOLEAN);
     node->meta.boolean.value = boolean;
     return node;
 }
 
 ASTNode *create_var_node(char *name) {
-    printf("\nCreating a variable node with name: %s\n", name);
+    if (verbose_ast_build) printf("\nCreating a variable node with name: %s\n", name);
     ASTNode *node = create_node(NODE_VARIABLE);
     node->meta.variable.name = name;
     return node;
 }
 
 ASTNode *create_assignment_node(ASTNode *var, ASTNode *value) {
-    printf("\nCreating an assignment node\n");
+    if (verbose_ast_build) printf("\nCreating an assignment node\n");
     ASTNode *node = create_node(NODE_ASSIGNMENT);
     node->meta.assignment.var = var;
     node->meta.assignment.value = value;
@@ -257,7 +260,7 @@ ASTNode *create_assignment_node(ASTNode *var, ASTNode *value) {
 }
 
 ASTNode *create_binary_op_node(BinaryOpType op, ASTNode *left, ASTNode *right) {
-    printf("\nCreating a binary operation node (%s)\n", binary_op_name(op));
+    if (verbose_ast_build) printf("\nCreating a binary operation node (%s)\n", binary_op_name(op));
     ASTNode *node = create_node(NODE_BINARY_OP);
     node->meta.binary_op.op = op;
     node->meta.binary_op.left = left;
@@ -266,7 +269,7 @@ ASTNode *create_binary_op_node(BinaryOpType op, ASTNode *left, ASTNode *right) {
 }
 
 ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand) {
-    printf("\nCreating a unary operation node (%s)\n", unary_op_name(op));
+    if (verbose_ast_build) printf("\nCreating a unary operation node (%s)\n", unary_op_name(op));
     ASTNode *node = create_node(NODE_UNARY_OP);
     node->meta.unary_op.op = op;
     node->meta.unary_op.operand = operand;
@@ -274,7 +277,7 @@ ASTNode *create_unary_op_node(UnaryOpType op, ASTNode *operand) {
 }
 
 ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *right) {
-    printf("\nCreating a relation operation node (%s)\n", relation_op_name(op));
+    if (verbose_ast_build) printf("\nCreating a relation operation node (%s)\n", relation_op_name(op));
     ASTNode *node = create_node(NODE_RELATION_OP);
     node->meta.relation.op = op;
     node->meta.relation.left = left;
@@ -283,7 +286,7 @@ ASTNode *create_relation_op_node(RelationOpType op, ASTNode *left, ASTNode *righ
 }
 
 ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *right) {
-    printf("\nCreating an equality operation node (%s)\n", equality_op_name(op));
+    if (verbose_ast_build) printf("\nCreating an equality operation node (%s)\n", equality_op_name(op));
     ASTNode *node = create_node(NODE_EQUALITY_OP);
     node->meta.equality.op = op;
     node->meta.equality.left = left;
@@ -292,7 +295,7 @@ ASTNode *create_equality_op_node(EqualityOpType op, ASTNode *left, ASTNode *righ
 }
 
 ASTNode *create_conditional_expression_node(ASTNode *condition, ASTNode *then_expr, ASTNode *else_expr) {
-    printf("\nCreating a conditional expression node (ternary op)\n");
+    if (verbose_ast_build) printf("\nCreating a conditional expression node (ternary op)\n");
     ASTNode *node = create_node(NODE_TERNARY_OP);
     node->meta.condition.cond = condition;
     node->meta.condition.then_case = then_expr;
@@ -301,7 +304,7 @@ ASTNode *create_conditional_expression_node(ASTNode *condition, ASTNode *then_ex
 }
 
 ASTNode *create_condition_node(ASTNode *condition, ASTNode *then_case, ASTNode *else_case) {
-    printf("\nCreating a condition node\n");
+    if (verbose_ast_build) printf("\nCreating a condition node\n");
     ASTNode *node = create_node(NODE_CONDITION);
     node->meta.condition.cond = condition;
     node->meta.condition.then_case = then_case;
@@ -310,7 +313,7 @@ ASTNode *create_condition_node(ASTNode *condition, ASTNode *then_case, ASTNode *
 }
 
 ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *init) {
-    if (init == NULL) {
+    if (verbose_ast_build) if (init == NULL) {
         printf("\nCreating a declaration node (var_name: %s, type: %s)\n", name, variable_type_name(type));
     } else {
         printf("\nCreating a declaration+initialization node (var_name: %s, type: %s)\n", name, variable_type_name(type));
@@ -323,7 +326,7 @@ ASTNode *create_var_declaration_node(char *name, VariableType type, ASTNode *ini
 }
 
 ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next) {
-    printf("\nCreating a statement list node\n");
+    if (verbose_ast_build) printf("\nCreating a statement list node\n");
     ASTNode *node = create_node(NODE_STATEMENT_LIST);
     node->meta.statement_list.statement = statement;
     node->meta.statement_list.next = next;
@@ -331,7 +334,7 @@ ASTNode *create_statement_list_node(ASTNode *statement, ASTNode *next) {
 }
 
 ASTNode *create_for_node(ASTNode *init, ASTNode *condition, ASTNode *iter, ASTNode *body) {
-    printf("\nCreating a for node\n");
+    if (verbose_ast_build) printf("\nCreating a for node\n");
     ASTNode *node = create_node(NODE_FOR);
     node->meta.iteration.for_loop.init = init;
     node->meta.iteration.for_loop.cond = condition;
@@ -341,26 +344,26 @@ ASTNode *create_for_node(ASTNode *init, ASTNode *condition, ASTNode *iter, ASTNo
 }
 
 ASTNode *create_return_node(ASTNode *value) {
-    printf("\nCreating a return node\n");
+    if (verbose_ast_build) printf("\nCreating a return node\n");
     ASTNode *node = create_node(NODE_RETURN);
     node->meta.iteration.return_statement.expr = value;
     return node;
 }
 
 ASTNode *create_break_node() {
-    printf("\nCreating a break node\n");
+    if (verbose_ast_build) printf("\nCreating a break node\n");
     ASTNode *node = create_node(NODE_BREAK);
     return node;
 }
 
 ASTNode *create_continue_node() {
-    printf("\nCreating a continue node\n");
+    if (verbose_ast_build) printf("\nCreating a continue node\n");
     ASTNode *node = create_node(NODE_CONTINUE);
     return node;
 }
 
 ASTNode *create_compound_statement_node(ASTNode *statement_list) {
-    if (statement_list == NULL) {
+    if (verbose_ast_build) if (statement_list == NULL) {
         printf("\nCreating an empty compound statement node\n");
     } else {
         printf("\nCreating a compound statement node\n");
@@ -371,7 +374,7 @@ ASTNode *create_compound_statement_node(ASTNode *statement_list) {
 }    
 
 ASTNode *create_function_call_node(char *name, ASTNode *arg) {
-    printf("\nCreating a function call node\n");
+    if (verbose_ast_build) printf("\nCreating a function call node\n");
     ASTNode *node = create_node(NODE_FUNCTION_CALL);
     node->meta.function_call.name = name;
     node->meta.function_call.arg = arg;

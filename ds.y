@@ -13,6 +13,10 @@ void yyerror(const char *str);
 // Zatim parsujem po jednom filu, takze nic neresime
 int yywrap() {} 
 
+bool verbose_flex = 0;
+bool verbose_ast_build = 0;
+bool verbose_ast_eval = 0;
+
 extern FILE *yyin;
 extern int yylineno;
 extern int yylloc;
@@ -91,8 +95,14 @@ degesharp:
     statement_list
     {
         root = $1;
-        printf("Parsed successfully!\n\n\nAST\n----------------------------------\n");
-        print_ast(root, 0);
+
+        if (verbose_ast_build) {
+            printf("\n----------------------------------");
+            printf("\nVisualisation of the AST\n");
+            printf("----------------------------------\n");
+            print_ast(root, 0);
+            printf("----------------------------------\n");
+        }
 
         // After parsing, move to semantic analysis and interpretation
         interpret(root);
@@ -392,20 +402,33 @@ void yyerror(const char *str) {
 }
 
 int main(int argc, char **argv) {
-    if (argc > 2) {
-        fprintf(stderr, "Usage: %s [source_file]\n", argv[0]);
-        return 1;
+    char *source_file = NULL;
+
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--vflex") == 0) {
+            printf("Verbose flex enabled\n");
+            verbose_flex = 1;
+        } else if (strcmp(argv[i], "--vast") == 0) {
+            printf("Verbose AST build enabled\n");
+            verbose_ast_build = 1;
+        } else if (strcmp(argv[i], "--veval") == 0) {
+            printf("Verbose AST evaluation enabled\n");
+            verbose_ast_eval = 1;
+        } else if (!source_file) {
+            source_file = argv[i];
+        } else {
+            fprintf(stderr, "Usage: %s [--vflex] [--vast] [--veval] [-f source_file]\n", argv[0]);
+            return 1;
+        }
     }
 
-    if (argc == 2) {
-        FILE *file = fopen(argv[1], "r");
+    if (source_file) {
+        FILE *file = fopen(source_file, "r");
         if (!file) {
             perror("Error opening the file");
             return 1;
         }
         yyin = file;
-    } else {
-        yyin = stdin;  // Read from standard input if no file is provided
     }
 
     int result = yyparse();
@@ -413,6 +436,6 @@ int main(int argc, char **argv) {
     if (yyin != stdin) {
         fclose(yyin);
     }
-    
+
     return result;
 }

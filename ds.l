@@ -6,6 +6,8 @@ H			[a-fA-F0-9]
 #include "ds.tab.h"
 #include "inc/debug.h"
 
+extern bool verbose_flex;
+
 int check_type();
 
 char* process_string(const char* text) {
@@ -107,6 +109,7 @@ false                               { _("FALSE_LITERAL"); yylval.bool_val = 0; r
 "/"                                 { _("SLASH");           return '/'; }
 "?"                                 { _("QUESTION_MARK");   return '?'; }
 
+\n                                  { /* ignore newlines */ }
 .                                   {}
 %%
 
@@ -123,7 +126,7 @@ int check_type() {
     MATCH_TYPE("int", TYPE_INT);
     MATCH_TYPE("bool", TYPE_BOOL);
 
-    printf("IDENTIFIER(%s) ", yytext);
+    if (verbose_flex) printf("IDENTIFIER(%s) ", yytext);
     yylval.str_val = strdup(yytext);
     return IDENTIFIER;
 }

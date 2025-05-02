@@ -40,6 +40,16 @@ There are three verbosity flags:
 - `--vast` - prints traces of the parsing process and the final AST
 - `--veval` - prints traces of the evaluation process (quite verbose)
 
+#### VSCode extension (optional)
+
+The directory `lang-server` contains a simple language server for VSCode. It provides syntax highlighting and basic autocompletion.
+
+```bash
+cd lang-server
+npm install
+npm run full
+```
+
 ## Syntax
 
 ### Variables

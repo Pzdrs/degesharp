@@ -19,7 +19,7 @@
     "package": "vsce package",
     "install": "code --install-extension degesharp-1.0.0.vsix",
     "yaml": "npx js-yaml syntaxes/degesharp.tmLanguage.yaml > syntaxes/degesharp.tmLanguage.json",
-    "pinstall": "npm run yaml && npm run package && npm run install"
+    "full": "npm run yaml && npm run package && npm run install"
   },
   "contributes": {
     "languages": [

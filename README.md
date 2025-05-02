@@ -69,6 +69,12 @@ x / y;
 "Hello " + "world"; // "Hello world"
 ```
 
+### Functions
+
+No support for user functions, but you can use the built-in functions.
+
+- `povidam(arg)` - prints the argument to the console (accepts `int`, `bool`, `string`)
+
 ### Logical operations
 
 ```

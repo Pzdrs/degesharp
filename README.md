@@ -45,7 +45,7 @@ There are three verbosity flags:
 The directory `lang-server` contains a simple language server for VSCode. It provides syntax highlighting and basic autocompletion.
 
 ```bash
-cd lang-server
+cd vsc-ext 
 npm install
 npm run full
 ```
